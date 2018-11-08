@@ -1,0 +1,6 @@
+<div class="universe-dashboard-page">
+    <cb-universe-sidebar (logOut)="onLogOut()" [userEmail]="userEmail | async" [userUniverses]="userUniverses | async"></cb-universe-sidebar>
+    <div class="universe-dashboard-content">
+        <router-outlet></router-outlet>
+    </div>
+</div>

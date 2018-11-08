@@ -1,0 +1,21 @@
+.universe-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.universe-header span {
+    display: inline-flex;
+}
+
+.universe-header-title {
+    align-items: center;
+}
+
+.universe-header-nav h5 a {
+    color: inherit;
+}
+
+span h1, h5 {
+    margin-bottom: 0;
+}

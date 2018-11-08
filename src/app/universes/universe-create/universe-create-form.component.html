@@ -1,0 +1,19 @@
+<form [formGroup]="universeForm" (submit)="onCreate()" #form="ngForm">
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+    <div class="form-group row">
+        <label for="name" class="col-sm-2 col-form-label col-form-label-lg">Name</label>
+        <div class="col-sm-10">
+            <input class="form-control form-control-lg" type="text" id="name" formControlName="name" autofocus>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="description" class="col-sm-2 col-form-label col-form-label-lg">Description</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" type="text" id="description" rows="8" formControlName="description"></textarea>
+            <button type="submit" class="btn btn-primary mt-3" [disabled]="!form.valid || loading">
+                <ng-container *ngIf="!loading">Create</ng-container>
+                <i *ngIf="loading" class="fa fa-spinner fa-spin"></i>
+            </button>
+        </div>
+    </div>
+</form>

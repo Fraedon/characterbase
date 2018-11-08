@@ -1,0 +1,41 @@
+.divider {
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    flex: 0 0 256px;
+    max-width: inherit;
+}
+
+.avatar {
+    height: 256px;
+    width: 256px;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.avatar[src=""] {
+    opacity: 0;
+}
+
+.fields {
+    flex-grow: 1;
+}
+
+.form-group:not(.check) {
+    align-items: center;
+}
+
+.progress {
+    flex-grow: 1;
+    margin-left: 15px;
+}
+
+.progress input {
+    background-color: white;
+}
+
+.progress-input {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+textarea {
+    resize: none;
+}

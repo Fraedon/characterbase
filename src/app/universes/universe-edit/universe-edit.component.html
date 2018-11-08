@@ -1,0 +1,30 @@
+<div class="container dashboard-container">
+    <h1>Editing {{ universe.name }}</h1>
+    <hr>
+    <div class="settings-view">
+        <div class="settings-nav mr-3">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="currentPage == UniverseEditPage.General" routerLink="."
+                        [fragment]="UniverseEditPage.General">General</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="currentPage == UniverseEditPage.Collaborators" routerLink="."
+                        [fragment]="UniverseEditPage.Collaborators">Collaborators</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="currentPage == UniverseEditPage.CharacterGuide" routerLink="."
+                        [fragment]="UniverseEditPage.CharacterGuide">Character Guide</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="currentPage == UniverseEditPage.Advanced" routerLink="."
+                        [fragment]="UniverseEditPage.Advanced">Advanced</a>
+                </li>
+            </ul>
+        </div>
+        <div class="settings-form">
+            <cb-universe-edit-form [preloadedUniverse]="universe" [loading]="loading" [error]="error" [page]="currentPage"
+                [user]="user | async" (savedChanges)="onSaveChanges($event)" [saved]="saved"></cb-universe-edit-form>
+        </div>
+    </div>
+</div>

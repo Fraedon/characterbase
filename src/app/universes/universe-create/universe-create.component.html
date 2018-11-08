@@ -1,0 +1,6 @@
+<div class="container dashboard-container">
+    <h1>Create a new universe</h1>
+    <p class="lead text-secondary">Universes are collections where you can store your characters.</p>
+    <hr>
+    <cb-universe-create-form (created)="onCreated($event)" [error]="error" [loading]="loading"></cb-universe-create-form>
+</div>

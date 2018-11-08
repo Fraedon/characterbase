@@ -1,0 +1,10 @@
+<div class="list-group-item text-center">
+    <a routerLink="">
+        <img class="logo" src="./assets/logo_narrow.png"/>
+    </a>
+</div>
+<div class="list-group-item profile-item small">
+    {{ userEmail }}
+    <button class="btn btn-link btn-sm logout-button" (click)="onLogOut()">Sign out</button>
+</div>
+<cb-universe-list [universes]="userUniverses"></cb-universe-list>

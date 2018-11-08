@@ -1,0 +1,7 @@
+<a *ngFor="let universe of universes" class="list-group-item list-group-item-action" [routerLink]="['/u', universe.id]"
+    routerLinkActive="list-group-item-primary">
+    {{ universe.name }}
+</a>
+<a class="list-group-item list-group-item-action text-primary text-center" routerLink="/new">
+    <i class="fas fa-plus mr-2"></i>Create a new universe...
+</a>
