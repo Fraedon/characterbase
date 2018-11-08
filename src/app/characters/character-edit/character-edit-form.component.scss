@@ -39,3 +39,21 @@
 textarea {
     resize: none;
 }
+
+.require-check {
+    display: table;
+    vertical-align: middle;
+}
+
+.require-check .form-check {
+    display: inline;
+}
+
+.label {
+    margin-bottom: inherit;
+}
+
+.field-disabled label {
+    opacity: 0.5;
+    user-select: none;
+}

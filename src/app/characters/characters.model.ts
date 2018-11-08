@@ -79,14 +79,15 @@ export type CharacterGuideFieldType =
     | CharacterGuideField;
 
 export interface CharacterGuideField {
+    default?: CharacterFieldValue;
     required: boolean;
-    info?: string;
+    info: string;
     type: CharacterFieldType;
     name: string;
 }
 
 export interface CharacterGuideTextField extends CharacterGuideField {
-    case?: TextCase;
+    case: TextCase;
     minLength: number;
     maxLength: number;
 }
@@ -99,7 +100,7 @@ export interface CharacterGuideDescriptionField extends CharacterGuideField {
 
 export interface CharacterGuideNumberField extends CharacterGuideField {
     float: boolean; // Whether to allow floating-point numbers or not (decimals)
-    tick?: number;  // Input must be factorable by this
+    tick: number;  // Input must be factorable by this
     min: number;
     max: number;
 }
@@ -107,13 +108,13 @@ export interface CharacterGuideNumberField extends CharacterGuideField {
 export interface CharacterGuideProgressField extends CharacterGuideField {
     color: ProgressBarColor;    // Color to show for progress bar
     bar: boolean;               // Whether to display progress bar or not
-    tick?: number;              // Input must be factorable by this
+    tick: number;              // Input must be factorable by this
     min: number;
     max: number;
 }
 
 export interface CharacterGuideOptionsField extends CharacterGuideField {
-    options: string[] | number[];
+    options: string;
     multiple: boolean; // Whether to allow multiple choices or not
 }
 

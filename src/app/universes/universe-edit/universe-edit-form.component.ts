@@ -1,17 +1,17 @@
-import { Component, Input, OnInit, Output, EventEmitter, OnChanges } from "@angular/core";
+import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormGroup, FormControl, Validators, FormArray, AbstractControl } from "@angular/forms";
 import { UniverseEditPage } from "./universe-edit.component";
 import { User } from "firebase";
 import { CharacterFieldType, ProgressBarColor } from "src/app/characters/characters.model";
 import { Universe } from "../universe.model";
-import { CharacterFormGroup } from "src/app/characters/character-create/character-create-form.component";
+import { CharacterFormGroup } from "src/app/characters/character-edit/character-edit-form.component";
 
 @Component({
     selector: "cb-universe-edit-form",
     templateUrl: "./universe-edit-form.component.html",
     styleUrls: ["./universe-edit-form.component.scss"],
 })
-export class UniverseEditFormComponent implements OnInit, OnChanges {
+export class UniverseEditFormComponent implements OnInit {
     @Input() error: string;
     @Input() loading: string;
     @Input() preloadedUniverse: Universe;
@@ -60,33 +60,38 @@ export class UniverseEditFormComponent implements OnInit, OnChanges {
         preloaded.guide.groups.forEach((group, i) => {
             this.addGroup();
             group.fields.forEach((field, j) => {
+                let disableDefault = false;
+                if (typeof field.default === "undefined") {
+                    field.default = "";
+                    disableDefault = true;
+                }
                 switch (field.type) {
                     case CharacterFieldType.Text:
-                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Text);
+                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Text, disableDefault);
                         break;
                     case CharacterFieldType.Description:
-                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Description);
+                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Description, disableDefault);
                         break;
                     case CharacterFieldType.Number:
-                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Number);
+                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Number, disableDefault);
                         break;
                     case CharacterFieldType.Toggle:
-                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Toggle);
+                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Toggle, disableDefault);
                         break;
                     case CharacterFieldType.Progress:
-                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Progress);
+                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Progress, disableDefault);
                         break;
                     case CharacterFieldType.Reference:
-                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Reference);
+                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Reference, disableDefault);
                         break;
                     case CharacterFieldType.Options:
-                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Options);
+                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Options, disableDefault);
                         break;
                     case CharacterFieldType.List:
-                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.List);
+                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.List, disableDefault);
                         break;
                     case CharacterFieldType.Picture:
-                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Picture);
+                        this.addField(this.groups.controls[i] as FormGroup, CharacterFieldType.Picture, disableDefault);
                         break;
                 }
             });
@@ -111,13 +116,11 @@ export class UniverseEditFormComponent implements OnInit, OnChanges {
             this.universeForm.markAsPristine();
             this.unsavedChanges = false;
         });
+        console.log(this.universeForm.value);
     }
 
-    public ngOnChanges(changes) {
-        if (changes["loading"]) {
-            if (changes["loading"].currentValue) { this.universeForm.disable(); return; }
-            this.universeForm.enable();
-        }
+    public splitOptions(options: string) {
+        return options.split(",");
     }
 
     public onMoveGroup(event: { previousIndex: number, currentIndex: number }) {
@@ -152,11 +155,12 @@ export class UniverseEditFormComponent implements OnInit, OnChanges {
         this.groups.push(this.createGuideGroup());
     }
 
-    public addField(group: FormGroup, type: CharacterFieldType) {
+    public addField(group: FormGroup, type: CharacterFieldType, disableDefault: boolean = true) {
         const fieldArray = group.controls["fields"] as FormArray;
         const control = new FormGroup({}) as CharacterFormGroup;
         control.addControl("name", new FormControl(null, [Validators.required]));
         control.addControl("required", new FormControl(true));
+        control.addControl("default", new FormControl({ value: null, disabled: disableDefault }));
         control.addControl("info", new FormControl(""));
         control.type = type;
         switch (type) {
@@ -194,7 +198,7 @@ export class UniverseEditFormComponent implements OnInit, OnChanges {
                 break;
             case CharacterFieldType.Options:
                 control.addControl("type", new FormControl(CharacterFieldType.Options));
-                control.addControl("options", new FormControl(""));
+                control.addControl("options", new FormControl("", [Validators.required]));
                 control.addControl("multiple", new FormControl(false));
                 break;
             case CharacterFieldType.List:
@@ -219,6 +223,17 @@ export class UniverseEditFormComponent implements OnInit, OnChanges {
 
     public removeGroup(group: number) {
         this.groups.removeAt(group);
+    }
+
+    public toggleFieldDefault(event: { target: HTMLInputElement}, groupIndex: number, fieldIndex: number) {
+        const field = ((this.groups.at(groupIndex) as FormGroup).get("fields") as FormArray).at(fieldIndex) as FormGroup;
+        field.markAsDirty();
+        const checked = event.target.checked;
+        if (checked) {
+            field.get("default").enable();
+        } else {
+            field.get("default").disable();
+        }
     }
 
     public onSaveChanges() {
