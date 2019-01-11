@@ -24,34 +24,56 @@ export enum TextCase {
 }
 
 export enum ProgressBarColor {
-    Red = "red",        // Danger
-    Yellow = "yellow",  // Warning
-    Green = "green",    // Success
-    Blue = "blue",      // Primary
-    Teal = "teal",      // Info
-    Gray = "gray",      // Secondary
-    Dark = "dark",      // Dark
+    Red = "red", // Danger
+    Yellow = "yellow", // Warning
+    Green = "green", // Success
+    Blue = "blue", // Primary
+    Teal = "teal", // Info
+    Gray = "gray", // Secondary
+    Dark = "dark", // Dark
+}
+
+export enum CharacterSort {
+    Name = "name",
+    Relevance = "relevance",
+    DateCreated = "date_created",
+    LastUpdated = "last_updated",
+    Custom = "custom",
 }
 
 export type CharacterFieldValue =
-    | string
+    | null
     | string[]
-    | number
     | number[]
-    | boolean
-    | CharacterFieldProgressValue
     | CharacterField[]
-    | null;
+    | boolean
+    | number
+    | string
+    | CharacterFieldProgressValue;
 
 export interface CharacterFieldProgressValue {
-    min: number;
     at: number;
     max: number;
+    min: number;
+}
+
+export interface CharacterImage {
+    path: string;
+    publicUrl: string;
 }
 
 export interface Character {
+    fieldGroups: { name: string; fields: { [field: string]: { value: CharacterFieldValue } } }[];
     name: string;
     owner: string;
+    universe: string;
+    images: { [key: string]: CharacterImage };
+    meta: {
+        timestamps: {
+            createdAt: Date;
+            updatedAt: Date;
+        };
+    };
 }
 
 export interface CharacterField {
@@ -61,8 +83,8 @@ export interface CharacterField {
 }
 
 export interface CharacterGuideGroup {
-    name: string;
     fields: CharacterGuideFieldType[];
+    name: string;
 }
 
 export interface CharacterGuide {
@@ -80,42 +102,46 @@ export type CharacterGuideFieldType =
 
 export interface CharacterGuideField {
     default?: CharacterFieldValue;
-    required: boolean;
     info: string;
-    type: CharacterFieldType;
     name: string;
+    required: boolean;
+    type: CharacterFieldType;
 }
 
 export interface CharacterGuideTextField extends CharacterGuideField {
     case: TextCase;
-    minLength: number;
     maxLength: number;
+    minLength: number;
 }
 
 export interface CharacterGuideDescriptionField extends CharacterGuideField {
-    markdown: boolean; // Whether to allow markdown or not
-    minLength: number;
+    markdown: boolean;
     maxLength: number;
+    // Whether to allow markdown or not
+    minLength: number;
 }
 
 export interface CharacterGuideNumberField extends CharacterGuideField {
-    float: boolean; // Whether to allow floating-point numbers or not (decimals)
-    tick: number;  // Input must be factorable by this
+    float: boolean;
+    max: number; // Input must be factorable by this
     min: number;
-    max: number;
+    // Whether to allow floating-point numbers or not (decimals)
+    tick: number;
 }
 
 export interface CharacterGuideProgressField extends CharacterGuideField {
-    color: ProgressBarColor;    // Color to show for progress bar
-    bar: boolean;               // Whether to display progress bar or not
-    tick: number;              // Input must be factorable by this
+    // Color to show for progress bar
+    bar: boolean;
+    color: ProgressBarColor;
+    max: number; // Input must be factorable by this
     min: number;
-    max: number;
+    // Whether to display progress bar or not
+    tick: number;
 }
 
 export interface CharacterGuideOptionsField extends CharacterGuideField {
-    options: string;
-    multiple: boolean; // Whether to allow multiple choices or not
+    multiple: boolean;
+    options: string[]; // Whether to allow multiple choices or not
 }
 
 export interface CharacterGuideListField extends CharacterGuideField {
@@ -124,6 +150,6 @@ export interface CharacterGuideListField extends CharacterGuideField {
         | CharacterFieldType.Number
         | CharacterFieldType.Reference
         | CharacterFieldType.Options;
-    minlength: number;
     maxLength: number;
+    minlength: number;
 }

@@ -1,34 +1,30 @@
-import { Component, Output, EventEmitter, Input, OnChanges } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormStatus } from "src/app/shared/form-status.model";
 
-import { User } from "../models/auth.model";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { NewUserCredentials } from "../shared/auth.model";
 
 @Component({
     selector: "cb-signup-form",
     templateUrl: "./signup-form.component.html",
     styleUrls: ["./signup-form.component.scss"],
 })
-export class SignupFormComponent implements OnChanges {
-    @Input() loading: boolean;
-    @Input() error: string;
-    @Output() registered = new EventEmitter<User>();
-
+export class SignupFormComponent {
+    public get canSubmit() {
+        return this.signupForm.valid && !this.status.loading;
+    }
+    @Output() public registered = new EventEmitter<NewUserCredentials>();
     public signupForm = new FormGroup({
+        displayName: new FormControl("", [Validators.required]),
         emailAddress: new FormControl("", [Validators.required, Validators.email]),
         password: new FormControl("", [Validators.required]),
     });
+    @Input() public status: FormStatus;
 
-    public constructor() { }
-
-    public ngOnChanges(changes) {
-        if (changes["loading"]) {
-            if (changes["loading"].currentValue) { this.signupForm.disable(); return; }
-            this.signupForm.enable();
-        }
-    }
+    public constructor() {}
 
     public onSubmit() {
-        const user = this.signupForm.value as User;
+        const user = this.signupForm.value as NewUserCredentials;
         this.registered.emit(user);
     }
 }

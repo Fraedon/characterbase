@@ -1,24 +1,20 @@
 import { Injectable } from "@angular/core";
-import { Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from "@angular/router";
 import { AngularFirestore } from "@angular/fire/firestore";
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
+import { Observable, of } from "rxjs";
 
-import { Observable } from "rxjs";
-import { Universe } from "./universe.model";
+import { UniverseService } from "../core/universe.service";
 
-export interface UniverseResolve extends Universe {
-    meta: {
-        id: string;
-    };
-}
+import { MetaUniverse, Universe } from "./universe.model";
 
 @Injectable({
     providedIn: "root",
 })
-export class UniverseResolverService implements Resolve<UniverseResolve> {
-    constructor(public firestore: AngularFirestore) {}
+export class UniverseResolverService implements Resolve<Observable<MetaUniverse>> {
+    constructor(private universeService: UniverseService) {}
 
-    public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<UniverseResolve> {
-        const id = route.params.universeId;
-        return this.firestore.doc<Universe>(`/universes/${id}`).get().map((d) => ({ ...d.data() as Universe, meta: { id }}));
+    public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Observable<MetaUniverse>> {
+        const id = route.params["universeId"];
+        return of(this.universeService.getUniverse(id));
     }
 }

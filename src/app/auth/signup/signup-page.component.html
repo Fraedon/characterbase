@@ -1,4 +1,4 @@
 <div class="center-page">
-    <a routerLink=""><img class="logo" src="./assets/logo.png" /></a>
-    <cb-signup-form [loading]="loading" [error]="error" (registered)="onRegistered($event)"></cb-signup-form>
+    <a routerLink=""><img class="logo" src="./assets/logo.png"/></a>
+    <cb-signup-form [status]="status" (registered)="onRegistered($event)"></cb-signup-form>
 </div>

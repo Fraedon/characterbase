@@ -1,28 +1,51 @@
 import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { UniverseDashboardPageComponent } from "./universe-dashboard/universe-dashboard.component";
+import { RouterModule, Routes } from "@angular/router";
+
+import { SettingsPageComponent } from "../auth/settings/settings-page.component";
+import { CanDeactivateGuard } from "../shared/can-deactivate.guard";
+
 import { UniverseCreateComponent } from "./universe-create/universe-create.component";
-import { UniversePageComponent } from "./universe-page/universe-page.component";
-import { UniverseGuard } from "./universe.guard";
+import { UniverseDashboardPageComponent } from "./universe-dashboard/universe-dashboard.component";
 import { UniverseEditComponent } from "./universe-edit/universe-edit.component";
+import { UniverseLandingPageComponent } from "./universe-landing/universe-landing-page.component";
+import { UniversePageComponent } from "./universe-page/universe-page.component";
 import { UniverseResolverService } from "./universe-resolver.service";
+import { UniverseGuard } from "./universe.guard";
+import { UserUniversesResolverService } from "./user-universes-resolver.service";
 
 const routes: Routes = [
     {
-        path: "",
-        component: UniverseDashboardPageComponent,
         children: [
-            { path: "new", component: UniverseCreateComponent },
+            { component: SettingsPageComponent, path: "settings" },
             {
-                path: "u/:universeId",
-                canActivate: [UniverseGuard],
                 children: [
-                    { path: "", component: UniversePageComponent },
-                    { path: "edit", component: UniverseEditComponent, resolve: { universe: UniverseResolverService } },
-                    { path: "c", loadChildren: "../characters/characters.module#CharactersModule" },
+                    { component: UniverseCreateComponent, path: "new" },
+                    {
+                        canActivate: [UniverseGuard],
+                        children: [
+                            {
+                                component: UniversePageComponent,
+                                path: "",
+                            },
+                            {
+                                canDeactivate: [CanDeactivateGuard],
+                                component: UniverseEditComponent,
+                                path: "edit",
+                                resolve: { universe: UniverseResolverService },
+                            },
+                            { loadChildren: "../characters/characters.module#CharactersModule", path: "c" },
+                        ],
+                        path: ":universeId",
+                    },
                 ],
+                path: "u",
+                runGuardsAndResolvers: "always",
             },
+            { component: UniverseLandingPageComponent, path: "" },
         ],
+        component: UniverseDashboardPageComponent,
+        path: "",
+        resolve: { universes: UserUniversesResolverService },
     },
 ];
 

@@ -1,0 +1,40 @@
+<div class="container dashboard-container" *ngIf="(character | async); let character">
+    <ng-container *ngIf="(universe | async); let universe">
+        <div class="character-header mb-2">
+            <span class="character-header-title">
+                <h1 class="mb-0">
+                    <a [routerLink]="['/u', universe.meta.id]">{{ universe.data.name }}</a
+                    ><i class="fas fa-angle-right ml-3 mr-3"></i>{{ character.data.name }}
+                </h1>
+            </span>
+            <span class="character-header-nav">
+                <h5 class="mb-0" *ngIf="isOwner">
+                    <a routerLink="./edit"><i class="fas fa-pencil-alt"></i></a>
+                </h5>
+                <h5
+                    class="mb-0 ml-4 clickable"
+                    *ngIf="isAdmin"
+                    (click)="deleteCharacter(character.data.name, character.meta.id, universe.meta.id)"
+                >
+                    <i class="fas fa-trash-alt"></i>
+                </h5>
+            </span>
+        </div>
+        <h4 class="character-subheader">
+            <span *ngIf="(ownerProfile | async); let profile">
+                Owned by <strong>{{ profile.displayName }}</strong></span
+            >
+            —
+            <span class="clickable" *ngIf="character.data" (click)="showTimestampCreated = !showTimestampCreated">
+                <ng-container *ngIf="showTimestampCreated; else: updatedBlock">
+                    Created {{ character.data.meta.timestamps.createdAt | relativeTime }}
+                </ng-container>
+                <ng-template #updatedBlock
+                    >Updated {{ character.data.meta.timestamps.updatedAt | relativeTime }}</ng-template
+                >
+            </span>
+        </h4>
+        <hr />
+        <cb-character-view [character]="character.data" [guide]="universe.data.guide.groups"></cb-character-view>
+    </ng-container>
+</div>

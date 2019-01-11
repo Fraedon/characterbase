@@ -1,140 +1,310 @@
 <form [formGroup]="universeForm" (submit)="onSaveChanges()" #form="ngForm">
+    <div class="alert alert-danger" *ngIf="status.error">{{ status.error }}</div>
     <ng-container *ngIf="page == UniverseEditPage.General">
-        <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
         <div class="form-group row">
             <label for="name" class="col-sm-2 col-form-label">Name</label>
-            <div class="col-sm-10">
-                <input class="form-control" type="text" id="name" formControlName="name" autofocus>
+            <div class="col-sm-10 pr-0">
+                <input class="form-control" type="text" id="name" formControlName="name" autofocus />
             </div>
         </div>
         <div class="form-group row">
             <label for="description" class="col-sm-2 col-form-label">Description</label>
-            <div class="col-sm-10">
-                <textarea class="form-control" type="text" id="description" rows="8" formControlName="description"></textarea>
+            <div class="col-sm-10 pr-0">
+                <textarea class="form-control" id="description" rows="8" formControlName="description"></textarea>
             </div>
         </div>
     </ng-container>
     <ng-container *ngIf="page == UniverseEditPage.Collaborators">
         <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Owner</span>
-            </div>
-            <input type="text" class="form-control" [value]="user?.email + ' (You)'" disabled>
+            <div class="input-group-prepend"><span class="input-group-text">Owner</span></div>
+            <input type="text" class="form-control" [value]="user?.email + ' (You)'" disabled />
         </div>
         <ng-container formArrayName="collaborators">
-            <div class="input-group mb-2" *ngFor="let collaborator of collaborators.controls; let i=index">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Collaborator</span>
-                </div>
-                <input type="email" class="form-control" [formControlName]="i" #c>
+            <div class="input-group mb-2" *ngFor="let collaborator of collaborators.controls; let i = index">
+                <div class="input-group-prepend"><span class="input-group-text">Collaborator</span></div>
+                <input type="email" class="form-control" [formControlName]="i" #c />
                 <div class="input-group-append" *ngIf="i != 0 || (collaborators.controls.length > 1 && i == 0)">
-                    <button type="button" class="btn btn-outline-danger" (click)="removeCollaborator(i)"><i class="fa fa-minus"></i></button>
+                    <button type="button" class="btn btn-outline-danger" (click)="removeCollaborator(i)">
+                        <i class="fa fa-minus"></i>
+                    </button>
                 </div>
-                <div class="input-group-append" *ngIf="i == collaborators.controls.length-1 && c.value !== ''">
-                    <button type="button" class="btn btn-outline-success" (click)="addCollaborator()"><i class="fas fa-plus"></i></button>
+                <div class="input-group-append" *ngIf="i == collaborators.controls.length - 1 && c.value !== ''">
+                    <button type="button" class="btn btn-outline-success" (click)="addCollaborator()">
+                        <i class="fas fa-plus"></i>
+                    </button>
                 </div>
             </div>
         </ng-container>
     </ng-container>
     <ng-container *ngIf="page == UniverseEditPage.CharacterGuide">
         <ng-container formGroupName="guide">
-            <div formArrayName="groups" class="groups" id="groups" cdkDropList (cdkDropListDropped)="onMoveGroup($event)">
-                <div class="card mb-2 group" *ngFor="let group of groups.controls; let i=index" [formGroupName]="i" cdkDrag>
+            <div
+                formArrayName="groups"
+                class="groups"
+                id="groups"
+                cdkDropList
+                (cdkDropListDropped)="onMoveGroup($event)"
+            >
+                <div
+                    class="card mb-2 group"
+                    *ngFor="let group of groups.controls; let i = index"
+                    [formGroupName]="i"
+                    cdkDrag
+                >
                     <div class="card-body">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text handle" cdkDragHandle><i class="fas fa-bars"></i></span>
                                 <span class="input-group-text">Group</span>
                             </div>
-                            <input type="text" class="form-control" formControlName="name">
+                            <input type="text" class="form-control" formControlName="name" />
                             <div class="input-group-append" dropdown>
-                                <button class="btn btn-outline-primary dropdown-toggle" type="button" dropdownToggle>Add
-                                    <span class="caret"></span></button>
+                                <button class="btn btn-outline-primary dropdown-toggle" type="button" dropdownToggle>
+                                    Add <span class="caret"></span>
+                                </button>
                                 <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
-                                    <button class="dropdown-item" type="button" (click)="addGroup()"><i class="fas fa-layer-group mr-2"></i>Group</button>
+                                    <button class="dropdown-item" type="button" (click)="addGroup()">
+                                        <i class="fas fa-layer-group mr-2"></i>Group
+                                    </button>
                                     <div class="dropdown-divider"></div>
-                                    <button class="dropdown-item" type="button" (click)="addField(groups.controls[i], CharacterFieldType.Text)"><i class="fas fa-align-left mr-2"></i>Text</button>
-                                    <button class="dropdown-item" type="button" (click)="addField(groups.controls[i], CharacterFieldType.Description)"><i class="fas fa-align-justify mr-2"></i>Description</button>
-                                    <button class="dropdown-item" type="button" (click)="addField(groups.controls[i], CharacterFieldType.Number)"><i class="fas fa-sort-numeric-up mr-2"></i>Number</button>
-                                    <button class="dropdown-item" type="button" (click)="addField(groups.controls[i], CharacterFieldType.Toggle)"><i class="fas fa-toggle-on mr-2"></i>Toggle</button>
-                                    <button class="dropdown-item" type="button" (click)="addField(groups.controls[i], CharacterFieldType.Progress)"><i class="fas fa-percentage mr-2"></i>Progress</button>
-                                    <button class="dropdown-item" type="button" (click)="addField(groups.controls[i], CharacterFieldType.Reference)"><i class="fas fa-user mr-2"></i>Reference</button>
-                                    <button class="dropdown-item" type="button" (click)="addField(groups.controls[i], CharacterFieldType.Options)"><i class="fas fa-bars mr-2"></i>Options</button>
-                                    <button class="dropdown-item" type="button" (click)="addField(groups.controls[i], CharacterFieldType.List)"><i class="fas fa-list-ol mr-2"></i>List</button>
-                                    <button class="dropdown-item" type="button" (click)="addField(groups.controls[i], CharacterFieldType.Picture)"><i class="fas fa-image mr-2"></i>Picture</button>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        (click)="addField(groups.controls[i], CharacterFieldType.Text)"
+                                    >
+                                        <i class="fas fa-align-left mr-2"></i>Text
+                                    </button>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        (click)="addField(groups.controls[i], CharacterFieldType.Description)"
+                                    >
+                                        <i class="fas fa-align-justify mr-2"></i>Description
+                                    </button>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        (click)="addField(groups.controls[i], CharacterFieldType.Number)"
+                                    >
+                                        <i class="fas fa-sort-numeric-up mr-2"></i>Number
+                                    </button>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        (click)="addField(groups.controls[i], CharacterFieldType.Toggle)"
+                                    >
+                                        <i class="fas fa-toggle-on mr-2"></i>Toggle
+                                    </button>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        (click)="addField(groups.controls[i], CharacterFieldType.Progress)"
+                                    >
+                                        <i class="fas fa-percentage mr-2"></i>Progress
+                                    </button>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        (click)="addField(groups.controls[i], CharacterFieldType.Reference)"
+                                    >
+                                        <i class="fas fa-user mr-2"></i>Reference
+                                    </button>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        (click)="addField(groups.controls[i], CharacterFieldType.Options)"
+                                    >
+                                        <i class="fas fa-bars mr-2"></i>Options
+                                    </button>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        (click)="addField(groups.controls[i], CharacterFieldType.List)"
+                                    >
+                                        <i class="fas fa-list-ol mr-2"></i>List
+                                    </button>
+                                    <button
+                                        class="dropdown-item"
+                                        type="button"
+                                        (click)="addField(groups.controls[i], CharacterFieldType.Picture)"
+                                    >
+                                        <i class="fas fa-image mr-2"></i>Picture
+                                    </button>
                                 </div>
                             </div>
                             <div class="input-group-append" *ngIf="i != 0">
-                                <button type="button" class="btn btn-outline-danger" (click)="removeGroup(i)"><i class="fas fa-minus"></i></button>
+                                <button type="button" class="btn btn-outline-danger" (click)="removeGroup(i)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
                             </div>
                         </div>
-                        <hr *ngIf="groups.controls[i].controls.fields.controls.length > 0">
-                        <div formArrayName="fields" class="fields" cdkDropList (cdkDropListDropped)="onMoveField($event, i)">
-                            <div *ngFor="let field of group.controls.fields.controls; let j=index" class="field" [formGroupName]="j" cdkDrag>
-                                <div [ngSwitch]="field.type" [class.mb-2]="j !== group.controls.fields.controls.length-1">
+                        <hr *ngIf="groups.controls[i].controls.fields.controls.length > 0" />
+                        <div
+                            formArrayName="fields"
+                            class="fields"
+                            cdkDropList
+                            (cdkDropListDropped)="onMoveField($event, i)"
+                        >
+                            <div
+                                *ngFor="let field of group.controls.fields.controls; let j = index"
+                                class="field"
+                                [formGroupName]="j"
+                                cdkDrag
+                            >
+                                <div
+                                    [ngSwitch]="field.type"
+                                    [class.mb-2]="j !== group.controls.fields.controls.length - 1"
+                                >
                                     <div class="input-group mb-1">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text handle" cdkDragHandle><i class="fas fa-bars"></i></span>
+                                            <span class="input-group-text handle" cdkDragHandle
+                                                ><i class="fas fa-bars"></i
+                                            ></span>
                                             <span class="input-group-text">{{ field.type | titlecase }}</span>
                                         </div>
-                                        <input type="text" class="form-control" formControlName="name" >
+                                        <input type="text" class="form-control" formControlName="name" />
                                         <div class="input-group-append">
-                                            <button type="button" class="btn btn-outline-secondary" (click)="guideSettingsDisplay[[i,j]] ? guideSettingsDisplay[[i,j]] = !guideSettingsDisplay[[i,j]] : guideSettingsDisplay[[i,j]] = true" [class.active]="guideSettingsDisplay[[i,j]]"><i class="fas" [class.fa-caret-down]="!guideSettingsDisplay[[i,j]]" [class.fa-caret-up]="guideSettingsDisplay[[i,j]]"></i></button>
-                                            <button type="button" class="btn btn-outline-danger" (click)="removeField(i, j)"><i class="fa fa-minus"></i></button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-secondary"
+                                                (click)="
+                                                    guideSettingsDisplay[[i, j]]
+                                                        ? (guideSettingsDisplay[[i, j]] = !guideSettingsDisplay[[i, j]])
+                                                        : (guideSettingsDisplay[[i, j]] = true)
+                                                "
+                                                [class.active]="guideSettingsDisplay[[i, j]]"
+                                            >
+                                                <i
+                                                    class="fas"
+                                                    [class.fa-caret-down]="!guideSettingsDisplay[[i, j]]"
+                                                    [class.fa-caret-up]="guideSettingsDisplay[[i, j]]"
+                                                ></i>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-danger"
+                                                (click)="removeField(i, j)"
+                                            >
+                                                <i class="fa fa-minus"></i>
+                                            </button>
                                         </div>
                                     </div>
-                                    <div class="field-items" *ngIf="guideSettingsDisplay[[i,j]]">
+                                    <div class="field-items" *ngIf="guideSettingsDisplay[[i, j]]">
                                         <div class="form-group row">
                                             <label class="col-sm-2">Required</label>
                                             <div class="col-sm-10">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" formControlName="required">
+                                                    <input
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        formControlName="required"
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row" *ngIf="field.type !== CharacterFieldType.Picture">
-                                            <label class="col-sm-2" [class.col-form-label]="!field.type == CharacterFieldType.Toggle">Default</label>
+                                            <label
+                                                class="col-sm-2"
+                                                [class.col-form-label]="!field.type == CharacterFieldType.Toggle"
+                                                >Default</label
+                                            >
                                             <div class="col-sm-9">
                                                 <ng-container [ngSwitch]="field.type">
-                                                    <input class="form-control" type="text" formControlName="default" *ngSwitchCase="CharacterFieldType.Text">
-                                                    <textarea class="form-control" formControlName="default" *ngSwitchCase="CharacterFieldType.Description"></textarea>
-                                                    <input class="form-control w-auto" type="number" formControlName="default" *ngSwitchCase="CharacterFieldType.Number">
-                                                    <select class="custom-select w-auto" formControlName="default" *ngSwitchCase="CharacterFieldType.Toggle">
+                                                    <input
+                                                        class="form-control"
+                                                        type="text"
+                                                        formControlName="default"
+                                                        *ngSwitchCase="CharacterFieldType.Text"
+                                                    />
+                                                    <textarea
+                                                        class="form-control"
+                                                        formControlName="default"
+                                                        *ngSwitchCase="CharacterFieldType.Description"
+                                                    ></textarea>
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="default"
+                                                        *ngSwitchCase="CharacterFieldType.Number"
+                                                    />
+                                                    <select
+                                                        class="custom-select w-auto"
+                                                        formControlName="default"
+                                                        *ngSwitchCase="CharacterFieldType.Toggle"
+                                                    >
                                                         <option [ngValue]="true">Yes</option>
                                                         <option [ngValue]="false">No</option>
                                                     </select>
-                                                    <input class="form-control w-auto" type="number" formControlName="default" *ngSwitchCase="CharacterFieldType.Progress">
-                                                    <input class="form-control" type="text" formControlName="default" *ngSwitchCase="CharacterFieldType.Reference">
-                                                    <select class="custom-select w-auto" formControlName="default" *ngSwitchCase="CharacterFieldType.Options">
-                                                        <option *ngFor="let option of splitOptions(field.controls.options.value)" [value]="option">{{ option }}</option>
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="default"
+                                                        *ngSwitchCase="CharacterFieldType.Progress"
+                                                    />
+                                                    <input
+                                                        class="form-control"
+                                                        type="text"
+                                                        formControlName="default"
+                                                        *ngSwitchCase="CharacterFieldType.Reference"
+                                                    />
+                                                    <select
+                                                        class="custom-select w-auto"
+                                                        formControlName="default"
+                                                        *ngSwitchCase="CharacterFieldType.Options"
+                                                    >
+                                                        <option
+                                                            *ngFor="
+                                                                let option of splitOptions(field.controls.options.value)
+                                                            "
+                                                            [value]="option"
+                                                            >{{ option }}</option
+                                                        >
                                                     </select>
-                                                    <input class="form-control" type="text" formControlName="default" *ngSwitchCase="CharacterFieldType.List">
+                                                    <input
+                                                        class="form-control"
+                                                        type="text"
+                                                        formControlName="default"
+                                                        *ngSwitchCase="CharacterFieldType.List"
+                                                    />
                                                 </ng-container>
                                             </div>
                                             <div class="col-sm-1">
                                                 <div class="form-check require-check">
-                                                    <input class="form-check-input" type="checkbox" (click)="toggleFieldDefault($event, i, j)" [checked]="field.controls.default.enabled">
+                                                    <input
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        (click)="toggleFieldDefault($event, i, j)"
+                                                        [checked]="field.controls.default.enabled"
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-2 col-form-label">Info</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" type="text" formControlName="info">
+                                                <input class="form-control" type="text" formControlName="info" />
                                             </div>
                                         </div>
-                                        <hr *ngIf="numControls(field) > 3">
+                                        <hr *ngIf="numControls(field) > 3" />
                                         <ng-container *ngSwitchCase="CharacterFieldType.Text">
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Minimum Length</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="minLength">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="minLength"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Maximum Length</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="maxLength">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="maxLength"
+                                                    />
                                                 </div>
                                             </div>
                                         </ng-container>
@@ -143,20 +313,36 @@
                                                 <label class="col-sm-2">Markdown</label>
                                                 <div class="col-sm-10">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" formControlName="markdown">
+                                                        <input
+                                                            class="form-check-input"
+                                                            type="checkbox"
+                                                            formControlName="markdown"
+                                                        />
+                                                        <small class="text-muted"
+                                                        >* Whether <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">unique styling</a> may be applied to the contents
+                                                        of this field</small
+                                                        >
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Minimum Length</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="minLength">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="minLength"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Maximum Length</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="maxLength">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="maxLength"
+                                                    />
                                                 </div>
                                             </div>
                                         </ng-container>
@@ -165,26 +351,43 @@
                                                 <label class="col-sm-2">Float</label>
                                                 <div class="col-sm-10">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" formControlName="float">
+                                                        <input
+                                                            class="form-check-input"
+                                                            type="checkbox"
+                                                            formControlName="float"
+                                                        />
+                                                        <small class="text-muted">* Whether non-whole numbers are allowed in this field or not</small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Tick</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="tick">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="tick"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Minimum</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="min">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="min"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Maximum</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="max">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="max"
+                                                    />
                                                 </div>
                                             </div>
                                         </ng-container>
@@ -193,7 +396,11 @@
                                                 <label class="col-sm-2 col-form-label">Color</label>
                                                 <div class="col-sm-10">
                                                     <select class="custom-select w-auto" formControlName="color">
-                                                        <option *ngFor="let color of ProgressBarColor" [value]="color">{{ color | titlecase }}</option>
+                                                        <option
+                                                            *ngFor="let color of ProgressBarColor"
+                                                            [value]="color"
+                                                            >{{ color | titlecase }}</option
+                                                        >
                                                     </select>
                                                 </div>
                                             </div>
@@ -201,26 +408,42 @@
                                                 <label class="col-sm-2">Bar</label>
                                                 <div class="col-sm-10">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" formControlName="bar">
+                                                        <input
+                                                            class="form-check-input"
+                                                            type="checkbox"
+                                                            formControlName="bar"
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Tick</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="tick">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="tick"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Minimum</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="min">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="min"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Maximum</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="max">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="max"
+                                                    />
                                                 </div>
                                             </div>
                                         </ng-container>
@@ -228,14 +451,22 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Options</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control" type="text" formControlName="options">
+                                                    <input class="form-control" type="text" formControlName="options" />
+                                                    <small class="text-muted"
+                                                        >* Options are separated by commas (e.g., red, green,
+                                                        blue)</small
+                                                    >
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2">Multiple</label>
                                                 <div class="col-sm-10">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" formControlName="multiple">
+                                                        <input
+                                                            class="form-check-input"
+                                                            type="checkbox"
+                                                            formControlName="multiple"
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
@@ -247,33 +478,55 @@
                                                     <select class="custom-select w-auto" formControlName="items">
                                                         <option [value]="CharacterFieldType.Text">Text</option>
                                                         <option [value]="CharacterFieldType.Number">Number</option>
-                                                        <option [value]="CharacterFieldType.Reference">Reference</option>
+                                                        <option [value]="CharacterFieldType.Reference"
+                                                            >Reference</option
+                                                        >
                                                         <option [value]="CharacterFieldType.Options">Options</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="form-group row" *ngIf="field.controls.items.value == CharacterFieldType.Options">
+                                            <div
+                                                class="form-group row"
+                                                *ngIf="field.controls.items.value == CharacterFieldType.Options"
+                                            >
                                                 <label class="col-sm-2 col-form-label">Options</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control" type="text" formControlName="options">
+                                                    <input class="form-control" type="text" formControlName="options" />
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Minimum</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="min">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="min"
+                                                    />
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Maximum</label>
                                                 <div class="col-sm-10">
-                                                    <input class="form-control w-auto" type="number" formControlName="max">
+                                                    <input
+                                                        class="form-control w-auto"
+                                                        type="number"
+                                                        formControlName="max"
+                                                    />
                                                 </div>
                                             </div>
                                         </ng-container>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div
+                            *ngIf="group.controls.fields.errors && group.controls.fields.errors.uniqueGroups"
+                            class="alert alert-danger mb-0 mt-3"
+                        >
+                            Two or more of your fields seem to have the same name: <strong>"{{
+                                group.controls.fields.errors.uniqueGroups
+                            }}"</strong> <br />
+                            Please use different, unique names for each of your fields.
                         </div>
                     </div>
                 </div>
@@ -286,21 +539,47 @@
             <div class="input-group row mb-2">
                 <label class="col-sm-2 col-form-label">Character Title</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control w-auto" formControlName="titleField">
+                    <input type="text" class="form-control w-auto" formControlName="titleField" />
+                    <small class="form-text text-muted"
+                        >By default, each character has a title field, which represents their name. This represents the
+                        name of the title field.</small
+                    >
                 </div>
             </div>
             <div class="input-group row">
                 <label class="col-sm-2">Allow Avatars</label>
                 <div class="col-sm-10">
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" formControlName="allowAvatar">
+                        <input type="checkbox" class="form-check-input" formControlName="allowAvatar" />
                     </div>
+                    <br />
+                    <small class="form-text text-muted"
+                        >Avatars are presentable pictures/artworks which will show up beside characters when viewing
+                        them.</small
+                    >
                 </div>
+            </div>
+            <cb-title-divider text="Maintenance"></cb-title-divider>
+            <div class="row mb-2">
+                <button type="button" class="btn btn-danger" (click)="deleteUniverse()">Delete universe...</button>
+            </div>
+            <div class="row">
+                <button type="button" class="btn btn-danger" (click)="deleteAllCharacters()">
+                    Delete all characters...
+                </button>
             </div>
         </ng-container>
     </ng-container>
-    <button type="submit" class="btn btn-primary mt-3" [disabled]="!form.valid || loading || !unsavedChanges">
-        <ng-container *ngIf="!loading">{{ !unsavedChanges ? 'All changes saved' : 'Save changes' }}</ng-container>
-        <i *ngIf="loading" class="fa fa-spinner fa-spin"></i>
+    <hr />
+    <div *ngIf="groups.errors && groups.errors.uniqueGroups" class="alert alert-danger">
+        Two or more of your groups seem to have the same name: <strong>"{{ groups.errors.uniqueGroups }}"</strong>
+        <br />
+        Please use different, unique names for each of your groups.
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!canSubmit">
+        <ng-container *ngIf="!status.loading; else: loadingBlock">{{
+            !form.dirty ? "All changes saved" : "Save changes"
+        }}</ng-container>
+        <ng-template #loadingBlock><i *ngIf="status.loading" class="fa fa-spinner fa-spin"></i></ng-template>
     </button>
 </form>

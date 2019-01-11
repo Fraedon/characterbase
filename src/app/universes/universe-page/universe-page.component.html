@@ -1,16 +1,42 @@
-<div class="container dashboard-container">
+<div
+    class="container dashboard-container"
+    *ngIf="
+        {
+            characters: characters$ | async,
+            universe: universe$ | async,
+            owner: owner$ | async,
+            query: query$ | async
+        };
+        let data
+    "
+>
     <div class="universe-header mb-2">
         <span class="universe-header-title">
-            <h1 class="mr-2">{{ (universe | async)?.name }}</h1>
-            <p class="mb-0 text-muted" *ngIf="(universe | async)?.owner === (user | async)?.uid">Owned by you</p>
+            <h1 class="mr-2">{{ data.universe?.data.name }}</h1>
+            <p class="mb-0 text-muted">Owned by {{ data.owner }}</p>
         </span>
         <span class="universe-header-nav">
-            <h5 class="mr-4">307<i class="fas fa-users ml-2"></i></h5>
-            <h5 class="mr-4">{{ (universe | async)?.collaborators.length + 1 }}<i class="fas fa-user-edit ml-2"></i></h5>
-            <h5><a routerLink="edit"><i class="fas fa-cog"></i></a></h5>
+            <h5>{{ data.universe?.data.numCharacters }}<i class="fas fa-users ml-2"></i></h5>
+            <h5 class="ml-4">
+                {{ data.universe?.data.collaborators.length + 1 }}<i class="fas fa-user-edit ml-2"></i>
+            </h5>
+            <h5 class="ml-4" *ngIf="data.isOwner">
+                <a routerLink="edit"><i class="fas fa-cog"></i></a>
+            </h5>
         </span>
     </div>
-    <p class="lead text-muted">{{ (universe | async)?.description }}</p>
-    <hr>
-    <cb-character-toolbar></cb-character-toolbar>
+    <p class="lead text-muted">{{ data.universe?.data.description }}</p>
+    <hr />
+    <cb-character-toolbar
+        *ngIf="data.universe"
+        [query]="data.query"
+        [guideGroups]="data.universe?.data.guide.groups"
+    ></cb-character-toolbar>
+    <cb-character-list
+        *ngIf="data.characters"
+        [mode]="CharacterListMode.List"
+        [characters]="data.characters"
+        [query]="data.query"
+        [total]="data.universe?.data.numCharacters"
+    ></cb-character-list>
 </div>

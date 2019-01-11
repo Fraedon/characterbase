@@ -1,0 +1,72 @@
+.centered {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.avatar {
+    width: 256px;
+    height: 256px;
+}
+
+.groups {
+    flex-grow: 1;
+    flex-wrap: wrap;
+}
+
+.fields {
+    flex-flow: row wrap;
+    display: flex;
+    position: relative;
+    justify-content: space-around;
+}
+
+.field {
+    padding: 0.5em 1em;
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.missing-entry {
+    display: flex;
+    flex-direction: column;
+}
+
+.missing-entry small.key {
+    margin-top: 0.5em;
+}
+
+.field .card {
+    width: 100%;
+}
+
+.card-img {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.field .card .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.field-description,
+.field-progress:not(.field-progress-mini) {
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+.field-description .card .card-body {
+    word-wrap: break-word;
+}
+
+.field-list .list-group,
+.field-options .list-group {
+    max-height: 10rem;
+    overflow: scroll;
+}
+
+.progress {
+    height: 1.5rem;
+    width: 100%;
+}

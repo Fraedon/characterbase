@@ -3,15 +3,24 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    production: false,
     firebase: {
         apiKey: "AIzaSyDFtjyOmAl9PG-mEjDaJ1CzTQ2eaL-0xOg",
         authDomain: "characterbase-tk.firebaseapp.com",
         databaseURL: "https://characterbase-tk.firebaseio.com",
+        messagingSenderId: "183109382015",
         projectId: "characterbase-tk",
         storageBucket: "characterbase-tk.appspot.com",
-        messagingSenderId: "183109382015"
-    }
+    },
+    auth0: {
+        clientID: "KpJ03cy5EnXlnaNESX0bysdU9CyGQ1tt",
+        domain: "characterbase.auth0.com",
+        responseType: "token id_token",
+        redirectUri: "localhost:4200/login",
+        scope: "openid",
+    },
+    production: false,
+    characterQueryLimit: 15,
+    version: "v0.3.2",
 };
 
 /*

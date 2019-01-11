@@ -1,3 +1,12 @@
-:host {
-    display: flex;
+form {
+    justify-content: space-between;
+}
+
+.search {
+    flex-grow: 1;
+}
+
+.custom-select,
+input.form-control {
+    height: inherit;
 }

@@ -1,31 +1,25 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/auth";
-import {
-    CanActivate,
-    ActivatedRouteSnapshot,
-    RouterStateSnapshot,
-    Router,
-} from "@angular/router";
-
-import { map, tap } from "rxjs/operators";
+import { CanLoad, Router } from "@angular/router";
 import { Observable } from "rxjs";
+import { first, map, tap } from "rxjs/operators";
 
 @Injectable({
     providedIn: "root",
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuard implements CanLoad {
     constructor(public auth: AngularFireAuth, public router: Router) {}
-    canActivate(
-        next: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ): Observable<boolean> | Promise<boolean> | boolean {
+
+    public canLoad(): Observable<boolean> | Promise<boolean> | boolean {
         return this.auth.user.pipe(
+            first(),
             map((user) => !!user),
-            tap(loggedIn => {
+            tap((loggedIn) => {
+                console.log(loggedIn);
                 if (!loggedIn) {
                     this.router.navigate(["login"]);
                 }
-            }),
+            })
         );
     }
 }

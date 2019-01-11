@@ -1,0 +1,12 @@
+<div class="form-group">
+    <label [for]="controlId">{{ name }}</label>
+    <input
+        class="form-control"
+        type="text"
+        [id]="controlId"
+        [autofocus]="autofocus"
+        [type]="type || 'text'"
+        (input)="setValue($event.target.value)"
+        (blur)="onTouched()"
+    />
+</div>

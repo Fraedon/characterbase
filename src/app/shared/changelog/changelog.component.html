@@ -1,0 +1,8 @@
+<div class="card-body">
+    <markdown *ngIf="(changelog | async); else: loadingBlock; let changelog" class="changelog">
+        {{ changelog }}
+    </markdown>
+</div>
+<ng-template #loadingBlock>
+    <div class="card-body text-center"><i class="fas fa-spinner fa-spin"></i></div>
+</ng-template>

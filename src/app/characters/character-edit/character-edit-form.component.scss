@@ -1,13 +1,17 @@
-.divider {
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
-    flex: 0 0 256px;
-    max-width: inherit;
-}
-
 .avatar {
     height: 256px;
     width: 256px;
-    border-bottom: 1px solid rgba(0,0,0,.125);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+input.ng-invalid:not(.name),
+textarea.ng-invalid {
+    border-color: #dc3545;
+}
+
+input.ng-invalid:focus:not(.name),
+textarea.ng-invalid:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
 .avatar[src=""] {
@@ -16,6 +20,10 @@
 
 .fields {
     flex-grow: 1;
+}
+
+.custom-select {
+    display: block;
 }
 
 .form-group:not(.check) {
@@ -36,10 +44,6 @@
     padding-right: 15px;
 }
 
-textarea {
-    resize: none;
-}
-
 .require-check {
     display: table;
     vertical-align: middle;
@@ -49,6 +53,10 @@ textarea {
     display: inline;
 }
 
+.require-check ~ label {
+    margin-bottom: 0;
+}
+
 .label {
     margin-bottom: inherit;
 }
@@ -56,4 +64,18 @@ textarea {
 .field-disabled label {
     opacity: 0.5;
     user-select: none;
+}
+
+.field-disabled cb-image-upload {
+    opacity: 0.5;
+}
+
+.label-info {
+    text-decoration: underline dotted;
+    cursor: help;
+}
+
+.t-markdown {
+    font-family: monospace;
+    font-size: 1em;
 }

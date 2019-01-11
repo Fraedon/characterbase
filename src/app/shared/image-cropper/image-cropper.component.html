@@ -1,0 +1,13 @@
+<div class="modal-header align-items-center">
+    <h4 class="modal-title">Crop image</h4>
+    <button type="button" class="btn btn-primary ml-auto" (click)="saveCrop()">Save</button>
+    <button type="button" class="close ml-2" (click)="bsModalRef.hide()"><i class="fas fa-times"></i></button>
+</div>
+<div class="modal-body">
+    <image-cropper
+        [imageBase64]="imageBase64"
+        [maintainAspectRatio]="true"
+        [resizeToWidth]="256"
+        (imageCropped)="onCropped($event)"
+    ></image-cropper>
+</div>

@@ -1,46 +1,42 @@
-import { Component } from "@angular/core";
-import { AngularFireAuth } from "@angular/fire/auth";
-import { AngularFirestore } from "@angular/fire/firestore";
-import { Router } from "@angular/router";
-
-import { Observable } from "rxjs";
+import { Component, HostBinding, OnInit } from "@angular/core";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { User } from "firebase";
-
+import { Observable } from "rxjs";
 import "rxjs/add/operator/map";
-import { Universe } from "../universe.model";
+import { distinctUntilChanged } from "rxjs/operators";
+import { LandingService } from "src/app/core/landing.service";
+import { UserService } from "src/app/core/user.service";
+
+import { MetaUniverse, Universe } from "../universe.model";
 
 @Component({
     selector: "cb-universe-dashboard",
     templateUrl: "./universe-dashboard.component.html",
     styleUrls: ["./universe-dashboard.component.scss"],
 })
-export class UniverseDashboardPageComponent {
+export class UniverseDashboardPageComponent implements OnInit {
+    public backgroundImage: Observable<string>;
+    public universes: Observable<MetaUniverse[]>;
     public user: Observable<User>;
-    public userEmail: Observable<string>;
-    public userUniverses: Observable<Universe[]>;
 
     public constructor(
-        public auth: AngularFireAuth,
-        public firestore: AngularFirestore,
-        public router: Router
+        private userService: UserService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private landingService: LandingService
     ) {
-        this.user = auth.user;
-        this.userEmail = this.auth.user.map((u) => {
-            if (u.email.length > 18) {
-                return u.email.substring(0, 15) + "…";
-            }
-            return u.email;
+        this.user = userService.user;
+    }
+
+    public ngOnInit() {
+        this.route.data.first().subscribe((data: { universes: Observable<MetaUniverse[]> }) => {
+            this.universes = data.universes;
         });
-        this.user.first().subscribe((user) => {
-            this.userUniverses = firestore
-                .collection<Universe>("/universes", (ref) =>
-                    ref.where("owner", "==", user.uid)
-                ).snapshotChanges().map((v) => v.map((d) => ({ ...d.payload.doc.data(), id: d.payload.doc.id })));
-        });
+        this.backgroundImage = this.landingService.getBackground().pipe(distinctUntilChanged());
     }
 
     public onLogOut() {
-        this.auth.auth.signOut();
-        this.router.navigate(["login"]);
+        this.userService.logOut();
+        this.router.navigateByUrl("/login");
     }
 }

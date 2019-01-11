@@ -1,0 +1,41 @@
+.img-thumbnail {
+    width: 64px;
+    height: 64px;
+}
+
+:host.character-list-item::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: "";
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0;
+    border-radius: inherit;
+    transition: opacity 0.15s;
+}
+
+:host.character-list-item:focus::after,
+:host.character-list-item:hover::after {
+    opacity: 0.1;
+}
+
+:host.character-list-item {
+    transition: background-position 0.15s ease-in;
+}
+
+:host.character-list-item:hover,
+:host.character-list-item:focus {
+    background-position: right 1% center !important;
+}
+
+:host {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+}
+
+.header {
+    flex-grow: 1;
+}

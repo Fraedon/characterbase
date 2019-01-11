@@ -1,0 +1,14 @@
+.card-img-top[src=""] {
+    display: none;
+}
+
+.card-img-top {
+    object-fit: cover;
+    filter: opacity(1);
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), filter 0.25s linear;
+}
+
+.minimized {
+    max-height: 100px !important;
+    filter: opacity(0.4);
+}

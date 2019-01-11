@@ -1,14 +1,14 @@
 import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { RouterModule, Routes } from "@angular/router";
 
-import { SignupPageComponent } from "./auth/signup/signup-page.component";
-import { LoginPageComponent } from "./auth/login/login-page.component";
 import { AuthGuard } from "./auth/auth.guard";
+import { LoginPageComponent } from "./auth/login/login-page.component";
+import { SignupPageComponent } from "./auth/signup/signup-page.component";
 
 const routes: Routes = [
-    { path: "signup", component: SignupPageComponent },
-    { path: "login", component: LoginPageComponent },
-    { path: "", canActivate: [AuthGuard], loadChildren: "./universes/universes.module#UniversesModule" },
+    { component: LoginPageComponent, path: "login" },
+    { component: SignupPageComponent, path: "signup" },
+    { canLoad: [AuthGuard], loadChildren: "./universes/universes.module#UniversesModule", path: "" },
 ];
 
 @NgModule({

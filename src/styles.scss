@@ -16,6 +16,19 @@ body,
 
 .container.dashboard-container {
     padding-top: 15px;
+    margin-bottom: 1.5em;
+}
+
+markdown {
+    display: block !important;
+}
+
+markdown :last-child {
+    margin-bottom: 0;
+}
+
+markdown.changelog h3 {
+    color: #6c757d;
 }
 
 .center-page {
@@ -25,12 +38,18 @@ body,
     flex-direction: column;
 }
 
-input.ng-invalid.ng-touched.ng-dirty {
+input.ng-invalid.ng-touched.ng-dirty,
+textarea.ng-invalid.ng-touched.ng-dirty {
     border-color: #dc3545;
 }
 
-input.ng-invalid.ng-touched.ng-dirty:focus {
+input.ng-invalid.ng-touched.ng-dirty:focus,
+textarea.ng-invalid.ng-touched.ng-dirty:focus {
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.custom-select {
+    cursor: pointer;
 }
 
 .logo {
@@ -38,14 +57,19 @@ input.ng-invalid.ng-touched.ng-dirty:focus {
     user-select: none;
 }
 
+image-cropper div img {
+    border-radius: 0.3rem;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.clickable {
+    cursor: pointer;
+}
+
 .universe-list {
     width: 256px;
     height: 100%;
     border-right: 1px solid rgba(0, 0, 0, 0.125);
-}
-
-.list-group-item-action {
-    cursor: pointer;
 }
 
 .title-divider {
@@ -66,8 +90,8 @@ input.ng-invalid.ng-touched.ng-dirty:focus {
 .cdk-drag-preview {
     box-sizing: border-box;
     border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-        0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .cdk-drag-placeholder {
@@ -80,4 +104,14 @@ input.ng-invalid.ng-touched.ng-dirty:focus {
 
 .handle {
     cursor: pointer;
+}
+
+.divider {
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    flex: 0 0 256px;
+    max-width: inherit;
+}
+
+.tooltip {
+    transition: opacity 0.2s linear;
 }

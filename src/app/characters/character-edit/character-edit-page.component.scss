@@ -1,0 +1,21 @@
+.character-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.character-header span {
+    display: inline-flex;
+}
+
+.character-header-title {
+    align-items: center;
+}
+
+.character-header-nav h5 a {
+    color: inherit;
+}
+
+.trash {
+    cursor: pointer;
+}

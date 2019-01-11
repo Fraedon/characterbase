@@ -1,31 +1,28 @@
 import { Component } from "@angular/core";
-import { AngularFireAuth } from "@angular/fire/auth";
+import { Router } from "@angular/router";
+import { UserService } from "src/app/core/user.service";
+import { FormStatus } from "src/app/shared/form-status.model";
 
-import { User } from "../models/auth.model";
+import { NewUserCredentials } from "../shared/auth.model";
 
 @Component({
     selector: "cb-signup-page",
     templateUrl: "./signup-page.component.html",
 })
 export class SignupPageComponent {
-    public loading = false;
-    public error = null;
+    public status: FormStatus = { error: undefined, loading: false };
 
-    public constructor(public auth: AngularFireAuth) {}
+    public constructor(private userService: UserService, private router: Router) {}
 
-    public async onRegistered(data: User) {
-        this.error = null;
-        this.loading = true;
+    public async onRegistered(data: NewUserCredentials) {
+        this.status = { error: undefined, loading: true };
         try {
-            const userCreds = await this.auth.auth.createUserWithEmailAndPassword(
-                data.emailAddress,
-                data.password,
-            );
-            // TODO: Redirect user to main page
+            await this.userService.createUserAndSignIn(data);
+            await this.router.navigateByUrl("/");
         } catch (err) {
-            this.error = err;
+            this.status.error = err;
         } finally {
-            this.loading = false;
+            this.status.loading = false;
         }
     }
 }

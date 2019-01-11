@@ -1,31 +1,27 @@
-import { Component, Input, EventEmitter, Output, OnChanges } from "@angular/core";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormStatus } from "src/app/shared/form-status.model";
 
-import { User } from "../models/auth.model";
+import { UserCredentials } from "../shared/auth.model";
 
 @Component({
     selector: "cb-login-form",
     templateUrl: "./login-form.component.html",
     styleUrls: ["./login-form.component.scss"],
 })
-export class LoginFormComponent implements OnChanges {
-    @Input() error: string;
-    @Input() loading: boolean;
-    @Output() login = new EventEmitter<User>();
+export class LoginFormComponent {
+    public get canSubmit() {
+        return this.loginForm.valid && !this.status.loading;
+    }
+    @Output() public login = new EventEmitter<UserCredentials>();
 
     public loginForm = new FormGroup({
         emailAddress: new FormControl("", [Validators.required, Validators.email]),
         password: new FormControl("", Validators.required),
     });
+    @Input() public status: FormStatus;
 
-    public constructor() { }
-
-    public ngOnChanges(changes) {
-        if (changes["loading"]) {
-            if (changes["loading"].currentValue) { this.loginForm.disable(); return; }
-            this.loginForm.enable();
-        }
-    }
+    public constructor() {}
 
     public onLogin() {
         this.login.emit(this.loginForm.value);

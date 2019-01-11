@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Output, Input, OnChanges } from "@angular/core";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 
+import { FormStatus } from "src/app/shared/form-status.model";
 import { Universe } from "../universe.model";
 
 @Component({
@@ -8,23 +9,19 @@ import { Universe } from "../universe.model";
     templateUrl: "./universe-create-form.component.html",
     styleUrls: ["./universe-create-form.component.scss"],
 })
-export class UniverseCreateFormComponent implements OnChanges {
-    @Input() loading: boolean;
-    @Input() error: string;
+export class UniverseCreateFormComponent {
+    @Input() status: FormStatus;
     @Output() created = new EventEmitter<Universe>();
 
     public universeForm = new FormGroup({
-        name: new FormControl("", [Validators.required, Validators.minLength(3)]),
         description: new FormControl(""),
+        name: new FormControl("", [Validators.required, Validators.minLength(3)]),
     });
 
-    public constructor() { }
+    public constructor() {}
 
-    public ngOnChanges(changes) {
-        if (changes["loading"]) {
-            if (changes["loading"].currentValue) { this.universeForm.disable(); return; }
-            this.universeForm.enable();
-        }
+    public get canSubmit() {
+        return this.universeForm.valid && !this.status.loading;
     }
 
     public onCreate() {

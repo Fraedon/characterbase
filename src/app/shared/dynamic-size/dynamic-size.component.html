@@ -1,0 +1,12 @@
+<ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchCase="DynamicSizeType.String">
+        <h2 *ngIf="value.length == 1">{{ value }}</h2>
+        <h3 *ngIf="value.length > 1 && value.length < 4">{{ value }}</h3>
+        <h4 *ngIf="value.length > 3">{{ value }}</h4>
+    </ng-container>
+    <ng-container *ngSwitchCase="DynamicSizeType.Number">
+        <h2 *ngIf="value < 999">{{ value }}</h2>
+        <h3 *ngIf="value > 999 && value < 99999">{{ value }}</h3>
+        <h4 *ngIf="value > 99999">{{ value }}</h4>
+    </ng-container>
+</ng-container>

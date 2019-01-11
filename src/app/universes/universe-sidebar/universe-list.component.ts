@@ -1,12 +1,13 @@
 import { Component, Input } from "@angular/core";
-import { Universe } from "../universe.model";
+import { MetaUniverse } from "../universe.model";
 
 @Component({
     selector: "cb-universe-list",
     templateUrl: "./universe-list.component.html",
+    styleUrls: ["./universe-list.component.scss"],
 })
 export class UniverseListComponent {
-    @Input() universes: Universe[];
+    @Input() universes: MetaUniverse[];
 
-    public constructor() { }
+    public constructor() {}
 }

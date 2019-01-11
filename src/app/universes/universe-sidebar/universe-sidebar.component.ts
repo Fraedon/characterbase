@@ -1,5 +1,7 @@
-import { Component, HostBinding, Output, EventEmitter, Input } from "@angular/core";
-import { Universe } from "../universe.model";
+import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core";
+import { environment } from "src/environments/environment";
+
+import { MetaUniverse } from "../universe.model";
 
 @Component({
     selector: "cb-universe-sidebar",
@@ -7,17 +9,16 @@ import { Universe } from "../universe.model";
     styleUrls: ["./universe-sidebar.component.scss"],
 })
 export class UniverseSidebarComponent {
-    @HostBinding("class.universe-list") _universeListClass = true;
-    @HostBinding("class.list-group") _listGroupClass = true;
-    @HostBinding("class.list-group-flush") _listGroupFlushClass = true;
+    @HostBinding("class") public classes = "universe-list list-group list-group-flush";
+    @Output() public logOut = new EventEmitter();
+    @Input() public universes: MetaUniverse[];
+    @Input() public userDisplayName: string;
 
-    @Input() userEmail: string;
-    @Input() userUniverses: Universe[];
-    @Output() logOut = new EventEmitter();
+    public version = environment.version;
 
-    public constructor() { }
+    public constructor() {}
 
-    public onLogOut() {
+    public doLogOut() {
         this.logOut.emit();
     }
 }

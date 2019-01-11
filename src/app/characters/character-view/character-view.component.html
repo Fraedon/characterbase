@@ -1,0 +1,183 @@
+<div class="d-flex" [class.centered]="!character.images['avatar']">
+    <div class="divider mr-3 pr-3 text-center" *ngIf="character.images['avatar']">
+        <img class="avatar rounded img-thumbnail mb-2" [src]="character.images['avatar'].publicUrl" />
+        <h2>{{ character.name }}</h2>
+    </div>
+    <div class="groups">
+        <ng-container *ngFor="let group of character.fieldGroups; let i = index">
+            <cb-title-divider [text]="group.name"></cb-title-divider>
+            <div class="fields">
+                <div
+                    *ngFor="let field of (group.fields | keyvalue | guideSort: guide:i); let j = index"
+                    class="field"
+                    [ngClass]="field && 'field-' + getFieldByName(group.name, field.key)?.type"
+                    [class.field-progress-mini]="
+                        field &&
+                        getFieldByName(group.name, field.key)?.type === CharacterFieldType.Progress &&
+                        !getFieldByName(group.name, field.key)?.bar
+                    "
+                    [style.display]="
+                        !(
+                            (field.value?.value !== '' && field.value?.value !== undefined) ||
+                            getFieldByName(group.name, field.key)?.required
+                        ) && 'none'
+                    "
+                >
+                    <div
+                        [ngSwitch]="field && getFieldByName(group.name, field.key)?.type"
+                        class="card text-center"
+                        [class.justify-content-center]="!field"
+                        [class.w-50]="
+                            field.value?.value &&
+                            getFieldByName(group.name, field.key)?.type == CharacterFieldType.Picture
+                        "
+                    >
+                        <div
+                            *ngIf="field.value === undefined; else: fieldBlock"
+                            class="text-muted card-body missing-entry"
+                        >
+                            <i class="fas fa-exclamation-circle fa-2x"></i>
+                            <small class="font-weight-bold key">{{ field.key }}</small> <small>Missing entry</small>
+                        </div>
+                        <ng-template #fieldBlock>
+                            <ng-container *ngSwitchCase="CharacterFieldType.Text">
+                                <h6 class="card-header">{{ field.key }}</h6>
+                                <div class="card-body">
+                                    <cb-dynamic-size
+                                        [value]="field.value.value"
+                                        [type]="DynamicSizeType.String"
+                                    ></cb-dynamic-size>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="CharacterFieldType.Description">
+                                <h6 class="card-header">{{ field.key }}</h6>
+                                <markdown
+                                    class="card-body"
+                                    *ngIf="getFieldByName(group.name, field.key)['markdown']; else: nonMarkdown"
+                                    >{{ field.value.value }}</markdown
+                                >
+                                <ng-template #nonMarkdown>
+                                    <div class="card-body">{{ field.value.value }}</div>
+                                </ng-template>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="CharacterFieldType.Number">
+                                <h6 class="card-header">{{ field.key }}</h6>
+                                <div class="card-body">
+                                    <cb-dynamic-size
+                                        [value]="field.value.value"
+                                        [type]="DynamicSizeType.Number"
+                                    ></cb-dynamic-size>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="CharacterFieldType.Toggle">
+                                <h6 class="card-header">{{ field.key }}</h6>
+                                <div class="card-body">
+                                    <i class="fas fa-check" *ngIf="field.value.value"></i>
+                                    <i class="fas fa-times" *ngIf="!field.value.value"></i>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="CharacterFieldType.Progress">
+                                <h6 class="card-header">{{ field.key }}</h6>
+                                <div class="card-body">
+                                    <div
+                                        class="progress"
+                                        *ngIf="getFieldByName(group.name, field.key)['bar']; else: miniBlock"
+                                    >
+                                        <div
+                                            class="progress-bar"
+                                            role="progressbar"
+                                            [style.width]="
+                                                (field.value.value / getFieldByName(group.name, field.key)['max']) *
+                                                    100 +
+                                                '%'
+                                            "
+                                            [ngClass]="
+                                                'bg-' +
+                                                convertProgressColor(getFieldByName(group.name, field.key)['color'])
+                                            "
+                                        >
+                                            <strong
+                                                >{{ field.value.value }} /
+                                                {{ getFieldByName(group.name, field.key)["max"] }}</strong
+                                            >
+                                        </div>
+                                    </div>
+                                    <ng-template #miniBlock>
+                                        <cb-dynamic-size
+                                            [value]="field.value.value"
+                                            [type]="DynamicSizeType.Number"
+                                            [class]="
+                                                'text-' +
+                                                convertProgressColor(getFieldByName(group.name, field.key)['color'])
+                                            "
+                                        ></cb-dynamic-size
+                                    ></ng-template>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="CharacterFieldType.Reference">
+                                <h6 class="card-header">{{ field.key }}</h6>
+                                <div class="card-body">{{ field.value.value }}</div>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="CharacterFieldType.Options">
+                                <h6 class="card-header">{{ field.key }}</h6>
+                                <ng-container *ngIf="field.value.value.constructor.name === 'Array'">
+                                    <div class="card-body" *ngIf="field.value.value.length == 1; else: listBlock">
+                                        <cb-dynamic-size
+                                            [value]="field.value.value[0]"
+                                            [type]="DynamicSizeType.String"
+                                        ></cb-dynamic-size>
+                                    </div>
+                                    <ng-template #listBlock>
+                                        <ul class="list-group list-group-flush">
+                                            <li *ngFor="let item of field.value.value" class="list-group-item">
+                                                {{ item }}
+                                            </li>
+                                        </ul>
+                                    </ng-template>
+                                </ng-container>
+                                <ng-container *ngIf="field.value.value.constructor.name === 'String'">
+                                    <div class="card-body">
+                                        <cb-dynamic-size
+                                            [value]="field.value.value"
+                                            [type]="DynamicSizeType.String"
+                                        ></cb-dynamic-size>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="CharacterFieldType.List">
+                                <h6 class="card-header">{{ field.key }}</h6>
+                                <div class="card-body" *ngIf="field.value.value.length == 1; else: listBlock">
+                                    <cb-dynamic-size
+                                        [value]="field.value.value[0]"
+                                        [type]="DynamicSizeType.String"
+                                    ></cb-dynamic-size>
+                                </div>
+                                <ng-template #listBlock>
+                                    <ul class="list-group list-group-flush">
+                                        <li *ngFor="let item of field.value.value" class="list-group-item">
+                                            {{ item }}
+                                        </li>
+                                    </ul>
+                                </ng-template>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="CharacterFieldType.Picture">
+                                <h6 class="card-header">{{ field.key }}</h6>
+                                <img
+                                    class="card-img"
+                                    [src]="character.images[field.value.value].publicUrl"
+                                    *ngIf="character.images[field.value.value]; else: noImageBlock"
+                                />
+                                <ng-template #noImageBlock
+                                    ><div class="text-muted card-body missing-entry">
+                                        <i class="fas fa-exclamation-circle fa-2x"></i>
+                                        <small class="mt-2">No picture</small>
+                                    </div>
+                                </ng-template>
+                            </ng-container>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
