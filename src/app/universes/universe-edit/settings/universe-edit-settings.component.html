@@ -1,0 +1,57 @@
+<ng-template #deleteUniverseModal>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Deleting {{ universe.name }}…</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        Are you <strong>sure</strong> you want to delete this universe? This will also delete all of the characters
+        inside of this universe as well. This action cannot be reversed!
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="deleteUniverse()">Delete</button>
+    </div>
+</ng-template>
+<ng-template #deleteCharactersModal>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Deleting all characters…</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        Are you <strong>sure</strong> you want to delete all characters? This action cannot be reversed!
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="deleteCharacters()">Delete</button>
+    </div>
+</ng-template>
+<form [formGroup]="settingsForm" (submit)="onSubmit()">
+    <cb-form-status [status]="status"></cb-form-status>
+    <div class="col col-md-6">
+        <cb-input-control
+            name="Title field"
+            formControlName="titleField"
+            help="The name of the field that represents character names"
+        ></cb-input-control>
+        <cb-checkbox-control
+            name="Allow avatars"
+            formControlName="allowAvatars"
+            help="Whether characters may have image avatars or not"
+        ></cb-checkbox-control>
+    </div>
+    <hr />
+    <div class="btn-toolbar">
+        <button type="button" class="btn btn-danger mr-2" (click)="openModal(deleteUniverseModal)">
+            Delete universe
+        </button>
+        <button type="button" class="btn btn-danger" (click)="openModal(deleteCharactersModal)">
+            Delete all characters
+        </button>
+    </div>
+    <hr />
+    <cb-submit-button text="Save changes" [state]="getSubmitState()"></cb-submit-button>
+</form>

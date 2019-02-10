@@ -1,0 +1,47 @@
+<div class="input-group mb-2" [formGroup]="field">
+    <div class="input-group-prepend" [ngSwitch]="getType()">
+        <span class="input-group-text" *ngSwitchCase="CharacterFieldType.Text">
+            <i class="fas fa-align-left mr-2"></i>Text
+        </span>
+        <span class="input-group-text" *ngSwitchCase="CharacterFieldType.Description">
+            <i class="fas fa-align-justify mr-2"></i>Description
+        </span>
+        <span class="input-group-text" *ngSwitchCase="CharacterFieldType.Number">
+            <i class="fas fa-sort-numeric-up mr-2"></i>Number
+        </span>
+        <span class="input-group-text" *ngSwitchCase="CharacterFieldType.Toggle">
+            <i class="fas fa-toggle-on mr-2"></i>Toggle
+        </span>
+        <span class="input-group-text" *ngSwitchCase="CharacterFieldType.Progress">
+            <i class="fas fa-percentage mr-2"></i>Progress
+        </span>
+        <span class="input-group-text" *ngSwitchCase="CharacterFieldType.Reference">
+            <i class="fas fa-user mr-2"></i>Reference
+        </span>
+        <span class="input-group-text" *ngSwitchCase="CharacterFieldType.Options">
+            <i class="fas fa-shapes mr-2"></i>Options
+        </span>
+        <span class="input-group-text" *ngSwitchCase="CharacterFieldType.List">
+            <i class="fas fa-list-ol mr-2"></i>List
+        </span>
+    </div>
+    <input type="text" class="form-control" formControlName="name" placeholder="Enter a name for this field..." />
+    <div class="input-group-append">
+        <button
+            class="btn btn-outline-secondary"
+            [class.active]="showSettings"
+            (click)="showSettings = !showSettings"
+            type="button"
+        >
+            <i class="fas fa-caret-down"></i>
+        </button>
+        <button class="btn btn-outline-danger" type="button" (click)="deleted.emit()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+<cb-universe-edit-guide-field-settings
+    [type]="getType()"
+    [field]="field"
+    *ngIf="showSettings"
+></cb-universe-edit-guide-field-settings>

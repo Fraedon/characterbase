@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core";
 import { environment } from "src/environments/environment";
 
-import { MetaUniverse } from "../universe.model";
+import { Universe, UniverseReference } from "../shared/universe.model";
 
 @Component({
     selector: "cb-universe-sidebar",
@@ -11,7 +11,7 @@ import { MetaUniverse } from "../universe.model";
 export class UniverseSidebarComponent {
     @HostBinding("class") public classes = "universe-list list-group list-group-flush";
     @Output() public logOut = new EventEmitter();
-    @Input() public universes: MetaUniverse[];
+    @Input() public universes: UniverseReference[];
     @Input() public userDisplayName: string;
 
     public version = environment.version;

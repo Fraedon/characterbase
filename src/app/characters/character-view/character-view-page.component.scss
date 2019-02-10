@@ -1,25 +1,6 @@
-.character-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.character-header span {
-    display: inline-flex;
-}
-
-.character-header-title {
-    align-items: center;
-}
-
-.character-header-nav h5 a {
-    color: inherit;
-}
-
-.character-subheader {
-    font-weight: 300;
-}
-
-.character-subheader strong {
-    font-weight: 600;
+:host {
+    overflow: scroll;
+    height: 100%;
+    display: block;
+    padding: 1rem 1rem 0;
 }

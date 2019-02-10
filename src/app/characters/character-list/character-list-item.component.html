@@ -1,20 +1,10 @@
-<img
-    [src]="character.data.images['avatar'] ? character.data.images['avatar'].publicUrl : '/assets/blank-avatar.png'"
-    class="img-thumbnail mr-3"
-    #i
-/>
+<img class="avatar mr-3" [src]="avatarUrl" *ngIf="showAvatar" />
 <div class="header">
-    <h6 class="m-0" [routerLink]="['c', character.meta.id]">{{ character.data.name }}</h6>
-    <p class="m-0 text-muted">
-        <ng-container *ngIf="sort?.sort === CharacterSort.LastUpdated; else: dateCreated">
-            {{ "Updated " + (character.data.meta.timestamps.updatedAt | relativeTime) }}
-        </ng-container>
-        <ng-template #dateCreated>
-            {{ "Created " + (character.data.meta.timestamps.createdAt | relativeTime) }}
-        </ng-template>
-    </p>
+    <h6 class="m-0" [routerLink]="['c', character.id]">{{ character.name }}</h6>
+    <small class="text-muted font-italic">{{ character.tag }}</small>
 </div>
 <div *ngIf="caption" class="text-right">
     <h6 class="m-0">{{ caption.field }}</h6>
     <p class="m-0 text-muted">{{ caption.value }}</p>
 </div>
+<small class="text-muted" *ngIf="character.hidden"><i class="fas fa-eye-slash"></i></small>

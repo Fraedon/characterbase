@@ -1,19 +1,20 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
-import { Observable, of } from "rxjs";
+import { tap } from "rxjs/operators";
 
-import { UniverseService } from "../core/universe.service";
-import { UserService } from "../core/user.service";
+import { AuthService } from "../core/auth.service";
 
-import { MetaUniverse } from "./universe.model";
+import { UniverseStateService } from "./shared/universe-state.service";
+import { Universe, UniverseReference } from "./shared/universe.model";
 
 @Injectable({
     providedIn: "root",
 })
-export class UserUniversesResolverService implements Resolve<Observable<MetaUniverse[]>> {
-    constructor(private userService: UserService, private universeService: UniverseService) {}
+export class UserUniversesResolverService implements Resolve<UniverseReference[]> {
+    constructor(private authService: AuthService, private universeStateService: UniverseStateService) {}
 
-    public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Observable<MetaUniverse[]>> {
-        return of(this.userService.user.mergeMap((user) => this.universeService.getUserUniverses()));
+    public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        this.universeStateService.clearReferences();
+        return this.authService.getCollaborations().pipe(tap((r) => this.universeStateService.addReferences(...r)));
     }
 }

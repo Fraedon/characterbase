@@ -1,0 +1,40 @@
+.character-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.character-header span {
+    display: inline-flex;
+}
+
+.character-header-title {
+    align-items: center;
+}
+
+.character-header-nav h5 a {
+    color: inherit;
+}
+
+.trash {
+    cursor: pointer;
+}
+
+:host {
+    display: block;
+    margin: 0 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+cb-image-upload {
+    width: 128px;
+    height: 128px;
+}
+
+cb-image-upload img {
+    max-height: 256px;
+}
+
+.delete {
+    margin: 0 25%;
+}

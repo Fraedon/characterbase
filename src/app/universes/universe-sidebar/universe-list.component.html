@@ -1,8 +1,8 @@
 <a
-    *ngFor="let universe of universes"
+    *ngFor="let universe of universes; let i = index"
     class="list-group-item list-group-item-action"
-    [routerLink]="['/u', universe.meta.id]"
+    [routerLink]="['/u', universe.id]"
     routerLinkActive="list-group-item-primary"
 >
-    {{ universe.data.name }}
+    <i class="fas fa-{{ getGlobe(i) }} mr-2"></i>{{ universe.name }}
 </a>

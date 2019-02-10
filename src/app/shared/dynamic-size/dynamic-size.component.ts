@@ -11,8 +11,7 @@ export enum DynamicSizeType {
     styleUrls: ["./dynamic-size.component.scss"],
 })
 export class DynamicSizeComponent {
-    @Input() value: number | string;
-    @Input() type: DynamicSizeType;
-
     public DynamicSizeType = DynamicSizeType;
+    @Input() public type: DynamicSizeType;
+    @Input() public value: number | string;
 }

@@ -1,23 +1,12 @@
-<div class="container dashboard-container" *ngIf="universe && character">
-    <div class="character-header mb-2">
-        <span class="character-header-title">
-            <h1 class="mb-0">
-                <a [routerLink]="['/u', universe.meta.id, 'c', character.meta.id]">{{ character.data.name }}</a
-                ><i class="fas fa-angle-right ml-3 mr-3"></i>Editing
-            </h1>
-        </span>
-        <span class="character-header-nav">
-            <h5 class="mb-0 trash" (click)="deleteCharacter()"><i class="fas fa-trash-alt"></i></h5>
-        </span>
-    </div>
-    <hr />
-    <cb-character-edit-form
-        [universe]="universe.data"
-        [mode]="CharacterEditMode.Edit"
-        [preload]="character.data"
+<div class="container px-0">
+    <cb-character-edit
+        [universe]="universe$ | async"
+        [character]="character$ | async"
+        [reset]="reset"
         [status]="status"
-        [editSuccess]="edited"
-        (edited)="onEdited($event)"
-        (changes)="setUnsavedChanges($event)"
-    ></cb-character-edit-form>
+        (saved)="onEdit($event)"
+        (deleted)="onDelete()"
+        (stateChange)="formState = $event"
+        mode="edit"
+    ></cb-character-edit>
 </div>

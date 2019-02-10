@@ -1,0 +1,90 @@
+<ng-container [formGroup]="group">
+    <div class="input-group">
+        <input type="text" class="form-control" formControlName="name" placeholder="Enter a name for this group..." />
+        <div class="input-group-append" dropdown>
+            <button
+                class="btn btn-outline-secondary"
+                [class.active]="showSettings"
+                (click)="showSettings = !showSettings"
+                type="button"
+            >
+                <i class="fas fa-caret-down"></i>
+            </button>
+            <button
+                type="button"
+                class="btn btn-outline-primary dropdown-toggle"
+                [class.rounded-0]="canDelete"
+                [class.border-right-0]="canDelete"
+                dropdownToggle
+            >
+                Add <span class="caret"></span>
+            </button>
+            <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
+                <button class="dropdown-item" type="button" (click)="fieldAdded.emit(CharacterFieldType.Text)">
+                    <i class="fas fa-align-left mr-2"></i>Text
+                </button>
+                <button class="dropdown-item" type="button" (click)="fieldAdded.emit(CharacterFieldType.Description)">
+                    <i class="fas fa-align-justify mr-2"></i>Description
+                </button>
+                <button class="dropdown-item" type="button" (click)="fieldAdded.emit(CharacterFieldType.Number)">
+                    <i class="fas fa-sort-numeric-up mr-2"></i>Number
+                </button>
+                <button class="dropdown-item" type="button" (click)="fieldAdded.emit(CharacterFieldType.Toggle)">
+                    <i class="fas fa-toggle-on mr-2"></i>Toggle
+                </button>
+                <button class="dropdown-item" type="button" (click)="fieldAdded.emit(CharacterFieldType.Progress)">
+                    <i class="fas fa-percentage mr-2"></i>Progress
+                </button>
+                <button
+                    class="dropdown-item"
+                    type="button"
+                    disabled
+                    (click)="fieldAdded.emit(CharacterFieldType.Reference)"
+                >
+                    <i class="fas fa-user mr-2"></i>Reference
+                </button>
+                <button class="dropdown-item" type="button" (click)="fieldAdded.emit(CharacterFieldType.Options)">
+                    <i class="fas fa-shapes mr-2"></i>Options
+                </button>
+                <button class="dropdown-item" type="button" (click)="fieldAdded.emit(CharacterFieldType.List)">
+                    <i class="fas fa-list-ol mr-2"></i>List
+                </button>
+                <button
+                    class="dropdown-item"
+                    type="button"
+                    disabled
+                    (click)="fieldAdded.emit(CharacterFieldType.Picture)"
+                >
+                    <i class="fas fa-image mr-2"></i>Picture
+                </button>
+            </div>
+            <button type="button" class="btn btn-outline-danger" *ngIf="canDelete" (click)="deleted.emit()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card card-body border-secondary mt-2" *ngIf="showSettings">
+        <cb-checkbox-control
+            compressed="true"
+            name="Required"
+            horizontal="true"
+            formControlName="required"
+        ></cb-checkbox-control>
+    </div>
+    <hr />
+    <div class="alert alert-danger" *ngIf="getFields().getError('uniqueGroups') as err">
+        Two or more of your fields seem to have the same name: "{{ err }}" <br />
+        Please use different, unique names for each of your fields.
+    </div>
+    <div *ngIf="getFields().controls.length; else noFields" cdkDropList (cdkDropListDropped)="onMoveField($event)">
+        <cb-universe-edit-guide-field
+            *ngFor="let field of getFields().controls; let i = index"
+            (deleted)="fieldDeleted.emit(i)"
+            [field]="field"
+            cdkDrag
+        ></cb-universe-edit-guide-field>
+    </div>
+    <ng-template #noFields>
+        <h5 class="text-muted text-center mb-0">Click "Add" to add new fields to this group</h5>
+    </ng-template>
+</ng-container>

@@ -1,10 +1,8 @@
-<div class="universe-dashboard-page">
-    <cb-universe-sidebar
-        (logOut)="onLogOut()"
-        [userDisplayName]="(user | async)?.displayName"
-        [universes]="universes | async"
-    ></cb-universe-sidebar>
-    <div class="universe-dashboard-content" [style.backgroundImage]="backgroundImage | async">
-        <router-outlet></router-outlet>
-    </div>
+<cb-universe-sidebar
+    (logOut)="onLogOut()"
+    [userDisplayName]="(user | async)?.displayName"
+    [universes]="universes$ | async"
+></cb-universe-sidebar>
+<div class="universe-dashboard-content" [style.backgroundImage]="backgroundImage | async">
+    <router-outlet></router-outlet>
 </div>

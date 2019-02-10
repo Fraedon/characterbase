@@ -1,13 +1,10 @@
-<div class="container dashboard-container">
-    <h1>Create a new character</h1>
-    <p class="lead text-muted">Characters are the life of your universe</p>
-    <hr />
-    <cb-character-edit-form
-        *ngIf="universe"
-        [universe]="universe.data"
-        [mode]="CharacterEditMode.Create"
-        (created)="onCreated($event)"
+<div class="container px-0">
+    <cb-character-edit
+        [universe]="universe$ | async"
+        [reset]="reset"
         [status]="status"
-        (changes)="setUnsavedChanges($event)"
-    ></cb-character-edit-form>
+        (saved)="onCreate($event)"
+        (stateChange)="formState = $event"
+        mode="create"
+    ></cb-character-edit>
 </div>

@@ -1,0 +1,7 @@
+<form [formGroup]="generalForm" (submit)="onSubmit()">
+    <cb-form-status [status]="status"></cb-form-status>
+    <cb-input-control name="Name" size="large" formControlName="name"></cb-input-control>
+    <cb-textarea-control name="Description" rows="5" formControlName="description"></cb-textarea-control>
+    <hr />
+    <cb-submit-button [state]="getSubmitState()" text="Save changes"></cb-submit-button>
+</form>

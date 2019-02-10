@@ -1,0 +1,22 @@
+<ng-template #input>
+    <textarea
+        [ngClass]="['form-control', getSize()]"
+        [id]="controlId"
+        [autofocus]="autofocus"
+        (input)="setValue($event.target.value)"
+        (blur)="onTouched()"
+        [rows]="rows"
+        [value]="value"
+        [disabled]="disabled"
+    ></textarea
+></ng-template>
+<div class="form-group" [class.row]="horizontal">
+    <label [for]="controlId" [ngClass]="{ 'col-sm-2 col-form-label': horizontal }">{{ name }}</label>
+    <label class="float-right">
+        <ng-container [ngTemplateOutlet]="labelToolbar" [ngTemplateOutletContext]="labelToolbarContext"></ng-container>
+    </label>
+    <div class="col-sm-10 my-auto" *ngIf="horizontal; else input">
+        <ng-container *ngTemplateOutlet="input"></ng-container>
+    </div>
+    <small class="form-text text-muted"><ng-container [ngTemplateOutlet]="help"></ng-container></small>
+</div>

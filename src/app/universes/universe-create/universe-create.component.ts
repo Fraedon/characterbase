@@ -1,41 +1,40 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { User } from "firebase";
 import { Observable } from "rxjs";
-import "rxjs/add/operator/first";
+import { finalize } from "rxjs/operators";
+import { User } from "src/app/auth/shared/user.model";
+import { AuthService } from "src/app/core/auth.service";
 import { UniverseService } from "src/app/core/universe.service";
-import { UserService } from "src/app/core/user.service";
 import { FormStatus } from "src/app/shared/form-status.model";
 
-import { Universe } from "../universe.model";
+import { UniverseStateService } from "../shared/universe-state.service";
+import { Universe } from "../shared/universe.model";
 
 @Component({
     selector: "cb-universe-create",
     templateUrl: "./universe-create.component.html",
 })
 export class UniverseCreateComponent {
-    public status: FormStatus = { error: undefined, loading: false };
-    private user: Observable<User>;
+    public status: FormStatus = { loading: false };
 
     public constructor(
         private universeService: UniverseService,
-        private userService: UserService,
-        private router: Router
-    ) {
-        this.user = userService.user;
-    }
+        private router: Router,
+        private universeStateService: UniverseStateService,
+    ) {}
 
-    public async onCreated(data: Universe) {
-        this.status = { error: undefined, loading: true };
-        try {
-            this.user.first().subscribe(async (user) => {
-                data = Object.assign(data, { owner: user.uid });
-                this.universeService.createUniverse(data).subscribe((newUniverse) => {
-                    this.router.navigate(["/u", newUniverse.meta.id]);
-                });
-            });
-        } catch (err) {
-            this.status.error = err;
-        }
+    public onSubmit(data: Partial<Universe>) {
+        this.status = { loading: true, error: null, success: null };
+
+        this.universeService.createUniverse(data).subscribe(
+            (universe) => {
+                this.router.navigate(["/u", universe.id]);
+                this.universeStateService.addUniversesWithReferences(universe);
+            },
+            (err) => {
+                this.status.loading = false;
+                this.status.error = err;
+            },
+        );
     }
 }

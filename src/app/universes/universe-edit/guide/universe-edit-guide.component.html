@@ -1,0 +1,56 @@
+<form [formGroup]="guideForm" (submit)="onSubmit()">
+    <cb-form-status [status]="status"></cb-form-status>
+    <div class="alert alert-danger" *ngIf="getGuideGroups().getError('uniqueGroups') as err">
+        Two or more of your groups seem to have the same name: "{{ err }}" <br />
+        Please use different, unique names for each of your groups.
+    </div>
+    <div
+        formArrayName="groups"
+        cdkDropList
+        (cdkDropListDropped)="moveGroup($event['previousIndex'], $event['currentIndex'])"
+    >
+        <cb-universe-edit-guide-group
+            *ngFor="let group of getGuideGroups().controls; let i = index"
+            [group]="group"
+            (fieldAdded)="addField($event, group)"
+            (fieldDeleted)="deleteField(group, $event)"
+            (fieldMoved)="moveField(group, $event['previousIndex'], $event['currentIndex'])"
+            (deleted)="deleteGroup(i)"
+            [canDelete]="i != 0"
+            cdkDrag
+        ></cb-universe-edit-guide-group>
+    </div>
+    <button type="button" class="btn btn-outline-primary btn-block" (click)="addGroup()">
+        <i class="fas fa-plus mr-2"></i>Add a new group
+    </button>
+    <hr />
+    <div class="btn-toolbar">
+        <cb-submit-button text="Save changes" [state]="getSubmitState()"></cb-submit-button>
+        <small class="text-info form-text ml-2 my-auto" *ngIf="!this.guideForm.dirty && !status.error"
+            >You need to make changes before you can save</small
+        >
+        <small class="text-danger form-text ml-2 my-auto" *ngIf="status.error && !status.loading">
+            There was an error saving the guide, please address your settings before trying again
+        </small>
+    </div>
+    <small class="form-text text-muted mt-3">
+        NOTE: You can drag the cards to rearrange the groups, as well as the fields via their
+        <i class="fas fa-bars mx-1"></i>handles.
+    </small>
+    <small class="form-text text-muted mt-2">
+        For more information on Markdown and RegExp, please see these links:<br />
+        Markdown:
+        <a href="https://www.markdownguide.org/cheat-sheet" target="_blank">
+            https://www.markdownguide.org/cheat-sheet
+        </a>
+        <br />
+        RegExp:
+        <a href="https://www.cheatography.com/davechild/cheat-sheets/regular-expressions" target="_blank">
+            https://www.cheatography.com/davechild/cheat-sheets/regular-expressions
+        </a>
+    </small>
+    <small class="form-text text-muted mt-2">
+        If you cannot save your changes, it is likely there is an issue with the guide.<br />
+        Please review all of your groups and fields before submission.
+    </small>
+</form>

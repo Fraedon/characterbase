@@ -1,62 +1,24 @@
-<div class="container dashboard-container">
+<div class="container dashboard-container" *ngIf="(universe | async); let universe">
     <h1>
-        <a *ngIf="universe?.data" routerLink="..">{{ universe.data.name }}</a
-        ><i class="fas fa-angle-right ml-3 mr-3"></i>Settings
+        <a routerLink="..">{{ universe.name }}</a
+        ><i class="fas fa-angle-right ml-3 mr-3"></i>Edit
     </h1>
     <hr />
     <div class="settings-view">
         <div class="settings-nav mr-3">
             <ul class="nav nav-pills flex-column">
+                <li class="nav-item"><a class="nav-link" routerLink="general" routerLinkActive="active">General</a></li>
                 <li class="nav-item">
-                    <a
-                        class="nav-link"
-                        [class.active]="currentPage == UniverseEditPage.General"
-                        routerLink="."
-                        [fragment]="UniverseEditPage.General"
-                        >General</a
-                    >
+                    <a class="nav-link" routerLink="collaborators" routerLinkActive="active">Collaborators</a>
                 </li>
                 <li class="nav-item">
-                    <a
-                        class="nav-link"
-                        [class.active]="currentPage == UniverseEditPage.Collaborators"
-                        routerLink="."
-                        [fragment]="UniverseEditPage.Collaborators"
-                        >Collaborators</a
-                    >
+                    <a class="nav-link" routerLink="guide" routerLinkActive="active">Character Guide</a>
                 </li>
                 <li class="nav-item">
-                    <a
-                        class="nav-link"
-                        [class.active]="currentPage == UniverseEditPage.CharacterGuide"
-                        routerLink="."
-                        [fragment]="UniverseEditPage.CharacterGuide"
-                        >Character Guide</a
-                    >
-                </li>
-                <li class="nav-item">
-                    <a
-                        class="nav-link"
-                        [class.active]="currentPage == UniverseEditPage.Advanced"
-                        routerLink="."
-                        [fragment]="UniverseEditPage.Advanced"
-                        >Advanced</a
-                    >
+                    <a class="nav-link" routerLink="settings" routerLinkActive="active">Settings</a>
                 </li>
             </ul>
         </div>
-        <div class="settings-form" *ngIf="universe">
-            <cb-universe-edit-form
-                [preloadedUniverse]="universe.data"
-                [status]="status"
-                [page]="currentPage"
-                [user]="user | async"
-                [saved]="saved"
-                (savedChanges)="onSaveChanges($event)"
-                (universeDeleted)="onDeleteUniverse()"
-                (charactersDeleted)="onDeleteCharacters()"
-                (changes)="setUnsavedChanges($event)"
-            ></cb-universe-edit-form>
-        </div>
+        <div class="settings-form" *ngIf="universe"><router-outlet></router-outlet></div>
     </div>
 </div>

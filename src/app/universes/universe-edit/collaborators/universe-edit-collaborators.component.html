@@ -1,0 +1,55 @@
+<cb-form-status [status]="status"></cb-form-status>
+<div class="btn-toolbar mb-2" *ngFor="let collaborator of getCollaborators()">
+    <div class="input-group w-50 mr-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text">{{ getRoleLabel(collaborator.role) }}</div>
+        </div>
+        <input class="form-control" type="text" readonly="true" [value]="collaborator.user.displayName" />
+    </div>
+    <ng-container *ngIf="collaborator.role !== CollaboratorRole.Owner">
+        <div class="btn-group mr-2" dropdown>
+            <button type="button" class="btn btn-secondary dropdown-toggle" dropdownToggle>
+                Set role <span class="caret"></span>
+            </button>
+            <div *dropdownMenu class="dropdown-menu">
+                <button
+                    class="dropdown-item"
+                    [disabled]="collaborator.role === CollaboratorRole.Admin"
+                    type="button"
+                    (click)="editCollaborator(collaborator.user.id, CollaboratorRole.Admin)"
+                >
+                    <i class="fas fa-user-shield mr-2"></i>Admin
+                </button>
+                <button
+                    class="dropdown-item"
+                    [disabled]="collaborator.role === CollaboratorRole.Member"
+                    type="button"
+                    (click)="editCollaborator(collaborator.user.id, CollaboratorRole.Member)"
+                >
+                    <i class="fas fa-user mr-2"></i>Member
+                </button>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger" (click)="removeCollaborator(collaborator.user.id)">
+                Remove
+            </button>
+        </div>
+    </ng-container>
+</div>
+<hr />
+<form [formGroup]="addCollaboratorForm" (submit)="onSubmit()">
+    <div class="btn-toolbar mb-2">
+        <input
+            class="form-control mr-2 w-50"
+            type="text"
+            formControlName="input"
+            placeholder="Enter an email address or user ID"
+        />
+        <cb-submit-button [state]="getSubmitState()" text="Add collaborator"></cb-submit-button>
+    </div>
+</form>
+<small class="form-text text-muted w-50"
+    >Note: Collaborators with the Admin role can add and remove other members, moderate characters, and edit your
+    universe.<br /><br />Think twice before handing over those powers.</small
+>

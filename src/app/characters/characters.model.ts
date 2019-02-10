@@ -1,3 +1,5 @@
+import { User } from "../auth/shared/user.model";
+
 // Meta attributes:
 //      REQUIRED:   Field must have a value (all fields are optional by default)
 //      TITLE:      Can only be applied once and on a TEXT field (will be shown on character list view)
@@ -51,40 +53,64 @@ export type CharacterFieldValue =
     | string
     | CharacterFieldProgressValue;
 
+export interface CharacterField {
+    hidden: boolean;
+    type: CharacterFieldType;
+    value: any;
+}
+
+export interface CharacterGroup {
+    fields: {
+        [key: string]: CharacterField;
+    };
+    hidden: boolean;
+}
+
+export interface CharacterFields {
+    groups: {
+        [key: string]: CharacterGroup;
+    };
+}
+
+export interface CharacterData {
+    createdAt: Date;
+    id: string;
+    name: string;
+    tag: string;
+    updatedAt: Date;
+}
+
+export interface CharacterReference extends CharacterData {
+    avatarUrl: string | null;
+    hidden: boolean;
+    ownerId: string;
+}
+
+export interface Character extends CharacterData {
+    fields: CharacterFields;
+    images: {
+        [key: string]: string;
+    };
+    meta: {
+        hidden: boolean;
+    };
+    owner: User;
+}
+
+export interface CharacterImages {
+    [key: string]: string;
+}
+
 export interface CharacterFieldProgressValue {
     at: number;
     max: number;
     min: number;
 }
 
-export interface CharacterImage {
-    path: string;
-    publicUrl: string;
-}
-
-export interface Character {
-    fieldGroups: { name: string; fields: { [field: string]: { value: CharacterFieldValue } } }[];
-    name: string;
-    owner: string;
-    universe: string;
-    images: { [key: string]: CharacterImage };
-    meta: {
-        timestamps: {
-            createdAt: Date;
-            updatedAt: Date;
-        };
-    };
-}
-
-export interface CharacterField {
-    name: string;
-    type: CharacterFieldType;
-    value: CharacterFieldValue;
-}
-
 export interface CharacterGuideGroup {
-    fields: CharacterGuideFieldType[];
+    fields: CharacterGuideField[];
     name: string;
+    required: boolean;
 }
 
 export interface CharacterGuide {
@@ -102,26 +128,27 @@ export type CharacterGuideFieldType =
 
 export interface CharacterGuideField {
     default?: CharacterFieldValue;
-    info: string;
+    description: string;
+    meta: CharacterGuideFieldType;
     name: string;
     required: boolean;
     type: CharacterFieldType;
 }
 
-export interface CharacterGuideTextField extends CharacterGuideField {
+export interface CharacterGuideTextField {
     case: TextCase;
     maxLength: number;
     minLength: number;
 }
 
-export interface CharacterGuideDescriptionField extends CharacterGuideField {
+export interface CharacterGuideDescriptionField {
     markdown: boolean;
     maxLength: number;
     // Whether to allow markdown or not
     minLength: number;
 }
 
-export interface CharacterGuideNumberField extends CharacterGuideField {
+export interface CharacterGuideNumberField {
     float: boolean;
     max: number; // Input must be factorable by this
     min: number;
@@ -129,7 +156,7 @@ export interface CharacterGuideNumberField extends CharacterGuideField {
     tick: number;
 }
 
-export interface CharacterGuideProgressField extends CharacterGuideField {
+export interface CharacterGuideProgressField {
     // Color to show for progress bar
     bar: boolean;
     color: ProgressBarColor;
@@ -139,12 +166,12 @@ export interface CharacterGuideProgressField extends CharacterGuideField {
     tick: number;
 }
 
-export interface CharacterGuideOptionsField extends CharacterGuideField {
+export interface CharacterGuideOptionsField {
     multiple: boolean;
     options: string[]; // Whether to allow multiple choices or not
 }
 
-export interface CharacterGuideListField extends CharacterGuideField {
+export interface CharacterGuideListField {
     items:
         | CharacterFieldType.Text
         | CharacterFieldType.Number

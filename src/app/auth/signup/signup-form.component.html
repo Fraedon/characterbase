@@ -6,7 +6,7 @@
         type="text"
         formControlName="displayName"
     ></cb-input-control>
-    <cb-input-control name="Email Address" type="email" formControlName="emailAddress"></cb-input-control>
+    <cb-input-control name="Email Address" type="email" formControlName="email"></cb-input-control>
     <cb-input-control name="Password" type="password" formControlName="password"></cb-input-control>
-    <cb-submit-button text="Register" [canSubmit]="canSubmit" [loading]="status.loading"></cb-submit-button>
+    <cb-submit-button text="Register" [state]="getSubmitState()" fluid="true"></cb-submit-button>
 </form>

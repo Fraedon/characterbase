@@ -1,23 +1,34 @@
 import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
-import { AngularFireModule } from "@angular/fire";
-import { AngularFirestoreModule } from "@angular/fire/firestore";
-import { AngularFireStorageModule } from "@angular/fire/storage";
+import { APP_INITIALIZER, NgModule, Provider } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
+import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 import { ModalModule } from "ngx-bootstrap/modal";
+import { PaginationModule } from "ngx-bootstrap/pagination";
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
-import { environment } from "src/environments/environment";
+
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { AuthModule } from "./auth/auth.module";
-import { ImageCropperComponent } from "./shared/image-cropper/image-cropper.component";
+import { AuthService } from "./core/auth.service";
+import { httpInterceptorProviders } from "./http-interceptors";
 
 const markedOptionsFactory = (): MarkedOptions => {
     const renderer = new MarkedRenderer();
     renderer.image = () => "";
     return { renderer };
 };
+
+const authProvider = {
+    provide: APP_INITIALIZER,
+    useFactory: (authService: AuthService) => () =>
+        authService
+            .profile()
+            .toPromise()
+            .catch(() => Promise.resolve()),
+    deps: [AuthService],
+    multi: true,
+} as Provider;
 
 @NgModule({
     declarations: [AppComponent],
@@ -27,9 +38,9 @@ const markedOptionsFactory = (): MarkedOptions => {
         ReactiveFormsModule,
         AppRoutingModule,
         AuthModule,
-        AngularFireModule.initializeApp(environment.firebase),
-        AngularFirestoreModule,
-        AngularFireStorageModule,
+        ModalModule.forRoot(),
+        BsDropdownModule.forRoot(),
+        PaginationModule.forRoot(),
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,
@@ -37,7 +48,7 @@ const markedOptionsFactory = (): MarkedOptions => {
             },
         }),
     ],
-    providers: [],
+    providers: [authProvider, httpInterceptorProviders],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,10 +1,13 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+
 import { CanDeactivateGuard } from "../shared/can-deactivate.guard";
-import { UniverseResolverService } from "../universes/universe-resolver.service";
+
 import { CharacterCreateComponent } from "./character-create/character-create.component";
 import { CharacterEditPageComponent } from "./character-edit/character-edit-page.component";
+import { CharacterEditComponent } from "./character-edit/character-edit.component";
 import { CharacterResolverService } from "./character-resolver.service";
+import { CharacterUniverseResolverService } from "./character-universe-resolver.service";
 import { CharacterViewPageComponent } from "./character-view/character-view-page.component";
 
 const routes: Routes = [
@@ -12,7 +15,7 @@ const routes: Routes = [
         canDeactivate: [CanDeactivateGuard],
         component: CharacterCreateComponent,
         path: "new",
-        resolve: { universe: UniverseResolverService },
+        resolve: { universe: CharacterUniverseResolverService },
     },
     {
         children: [
@@ -22,7 +25,7 @@ const routes: Routes = [
         path: ":characterId",
         resolve: {
             character: CharacterResolverService,
-            universe: UniverseResolverService,
+            universe: CharacterUniverseResolverService,
         },
         runGuardsAndResolvers: "always",
     },

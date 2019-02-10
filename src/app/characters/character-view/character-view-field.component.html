@@ -1,0 +1,74 @@
+<div class="card-header">{{ guideField.name }}</div>
+<ng-template #hiddenField>
+    <div class="card-body" [class.p-0]="canViewHidden">
+        <button
+            class="btn btn-link btn-sm w-100 p-4"
+            (click)="hidden = !hidden"
+            *ngIf="canViewHidden; else hiddenRestricted"
+        >
+            View this field
+        </button>
+        <ng-template #hiddenRestricted><small class="text-muted font-italic">This field is hidden</small></ng-template>
+    </div>
+</ng-template>
+<ng-template #missingField>
+    <div class="card-body">
+        <small class="text-muted text-center"><i class="fas fa-exclamation-circle mr-2"></i>Missing entry</small>
+    </div>
+</ng-template>
+<ng-container *ngIf="characterField; else missingField">
+    <ng-container [ngSwitch]="guideField.type" *ngIf="!hidden; else hiddenField">
+        <div class="card-body" *ngSwitchCase="CharacterFieldType.Text">
+            <cb-dynamic-size [type]="DynamicSizeType.String" [value]="characterField.value"></cb-dynamic-size>
+        </div>
+        <div class="card-body" *ngSwitchCase="CharacterFieldType.Description">
+            <markdown *ngIf="guideField.meta['markdown']; else noMarkdown" [data]="characterField.value"> </markdown>
+            <ng-template #noMarkdown>
+                <p #content class="mb-0">{{ characterField.value }}</p>
+            </ng-template>
+        </div>
+        <div class="card-body" *ngSwitchCase="CharacterFieldType.Number">
+            <cb-dynamic-size [type]="DynamicSizeType.Number" [value]="characterField.value"></cb-dynamic-size>
+        </div>
+        <div class="card-body" *ngSwitchCase="CharacterFieldType.Toggle">
+            <i class="fas fa-check" *ngIf="characterField.value"></i>
+            <i class="fas fa-times" *ngIf="!characterField.value"></i>
+        </div>
+        <div class="card-body" *ngSwitchCase="CharacterFieldType.Progress">
+            <div class="progress flex-grow-1" *ngIf="guideField.meta['bar']; else noBar">
+                <div
+                    class="progress-bar"
+                    [style.width]="calculateProgressWidth() + '%'"
+                    [ngClass]="'bg-' + getProgressColor()"
+                >
+                    <small class="font-weight-bold">{{ characterField.value }} / {{ guideField.meta["max"] }}</small>
+                </div>
+            </div>
+            <ng-template #noBar>
+                <cb-dynamic-size
+                    [type]="DynamicSizeType.String"
+                    [value]="characterField.value + ' / ' + guideField.meta['max']"
+                    [class]="'text-' + getProgressColor()"
+                ></cb-dynamic-size>
+            </ng-template>
+        </div>
+        <ng-container *ngSwitchCase="CharacterFieldType.Options">
+            <ul
+                class="list-group list-group-flush d-flex"
+                *ngIf="guideField.meta['multiple'] && characterField.value.length > 1; else noMultiple"
+            >
+                <li *ngFor="let item of characterField.value" class="list-group-item flex-grow-1">{{ item }}</li>
+            </ul>
+            <ng-template #noMultiple>
+                <div class="card-body">
+                    <h4 class="mb-0">{{ characterField.value }}</h4>
+                </div>
+            </ng-template>
+        </ng-container>
+        <ng-container *ngSwitchCase="CharacterFieldType.List">
+            <ul class="list-group list-group-flush d-flex">
+                <li *ngFor="let item of characterField.value" class="list-group-item flex-grow-1">{{ item }}</li>
+            </ul>
+        </ng-container>
+    </ng-container>
+</ng-container>

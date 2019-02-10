@@ -1,0 +1,30 @@
+<div class="form-group">
+    <label [for]="controlId">{{ name }}</label>
+    <label class="float-right">
+        <ng-container [ngTemplateOutlet]="labelToolbar" [ngTemplateOutletContext]="labelToolbarContext"></ng-container>
+    </label>
+    <div class="row mx-0">
+        <input
+            type="range"
+            class="custom-range col-md-11"
+            [value]="value"
+            (input)="setValue($event.target.value)"
+            (blur)="onTouched()"
+            [disabled]="disabled"
+            [min]="min"
+            [max]="max"
+            [step]="step"
+        />
+        <input
+            [disabled]="disabled"
+            (blur)="onTouched()"
+            [id]="controlId"
+            [autofocus]="autofocus"
+            type="number"
+            class="form-control d-sm-none d-md-block col-md-1"
+            [value]="value"
+            (input)="setValue($event.target.value)"
+        />
+    </div>
+    <small class="form-text text-muted"><ng-container [ngTemplateOutlet]="help"></ng-container></small>
+</div>

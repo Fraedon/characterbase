@@ -1,40 +1,31 @@
-<div class="container dashboard-container" *ngIf="(character | async); let character">
-    <ng-container *ngIf="(universe | async); let universe">
-        <div class="character-header mb-2">
-            <span class="character-header-title">
-                <h1 class="mb-0">
-                    <a [routerLink]="['/u', universe.meta.id]">{{ universe.data.name }}</a
-                    ><i class="fas fa-angle-right ml-3 mr-3"></i>{{ character.data.name }}
-                </h1>
-            </span>
-            <span class="character-header-nav">
-                <h5 class="mb-0" *ngIf="isOwner">
-                    <a routerLink="./edit"><i class="fas fa-pencil-alt"></i></a>
-                </h5>
-                <h5
-                    class="mb-0 ml-4 clickable"
-                    *ngIf="isAdmin"
-                    (click)="deleteCharacter(character.data.name, character.meta.id, universe.meta.id)"
-                >
-                    <i class="fas fa-trash-alt"></i>
-                </h5>
-            </span>
+<ng-container *ngIf="{ universe: universe$ | async, character: character$ | async } as data">
+    <ng-template #deleteModal>
+        <div class="modal-header">
+            <h4 class="modal-title pull-left">Deleting {{ data.character.name }}…</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-        <h4 class="character-subheader">
-            <span *ngIf="(ownerProfile | async); let profile">
-                Owned by <strong>{{ profile.displayName }}</strong></span
-            >
-            —
-            <span class="clickable" *ngIf="character.data" (click)="showTimestampCreated = !showTimestampCreated">
-                <ng-container *ngIf="showTimestampCreated; else: updatedBlock">
-                    Created {{ character.data.meta.timestamps.createdAt | relativeTime }}
-                </ng-container>
-                <ng-template #updatedBlock
-                    >Updated {{ character.data.meta.timestamps.updatedAt | relativeTime }}</ng-template
-                >
-            </span>
-        </h4>
-        <hr />
-        <cb-character-view [character]="character.data" [guide]="universe.data.guide.groups"></cb-character-view>
-    </ng-container>
-</div>
+        <div class="modal-body">
+            Are you <strong>sure</strong> you want to delete this character? This action cannot be reversed!
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="deleteModalRef.hide()">Cancel</button>
+            <button type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
+        </div>
+    </ng-template>
+    <cb-character-view
+        [character]="data.character"
+        [images]="{}"
+        [guide]="data.universe.guide"
+        class="mb-2"
+        [canEdit]="canEdit"
+        (deleted)="openModal(deleteModal)"
+        [universe]="data.universe"
+    ></cb-character-view>
+    <footer class="text-muted mb-3 mx-2" *ngIf="!data.character.meta.hidden">
+        <small>Created: {{ data.character.createdAt }}</small>
+        <br />
+        <small>Last updated: {{ data.character.updatedAt }}</small>
+    </footer>
+</ng-container>

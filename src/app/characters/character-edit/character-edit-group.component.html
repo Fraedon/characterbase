@@ -1,0 +1,32 @@
+<ng-template #toolbar>
+    <i
+        *ngIf="!universeGroup.required"
+        class="far mr-2 clickable align-middle"
+        [class.text-muted]="group.disabled"
+        [class.fa-check-circle]="group.enabled"
+        [class.fa-circle]="group.disabled"
+        (click)="toggleGroup()"
+        title="This group will be {{ group.enabled ? 'included' : 'not included' }} when viewing this character"
+    ></i>
+    <i
+        class="fas align-middle"
+        [class.clickable]="group.enabled"
+        [class.fa-eye]="!group.get('hidden').value"
+        [class.text-muted]="group.get('hidden').value || group.disabled"
+        [class.fa-eye-slash]="group.get('hidden').value || group.disabled"
+        (click)="toggleGroupHidden()"
+        title="This group will be {{ group.get('hidden').value ? 'hidden' : 'shown' }} to other collaborators"
+    ></i>
+</ng-template>
+<ng-container [formGroup]="group">
+    <cb-title-divider [text]="name" [dividerToolbar]="toolbar"></cb-title-divider>
+    <ng-container formGroupName="fields">
+        <ng-container *ngFor="let field of universeGroup.fields">
+            <cb-character-edit-field
+                [name]="field.name"
+                [field]="getFormField(field.name)"
+                [universeField]="field"
+            ></cb-character-edit-field>
+        </ng-container>
+    </ng-container>
+</ng-container>

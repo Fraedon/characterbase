@@ -8,13 +8,22 @@
 }
 
 .profile-item {
-    padding: .4rem 1.25rem;
+    padding: 0.4rem 1.25rem;
     display: flex;
+    min-height: 48px;
     align-items: center;
 }
 
 .profile-actions {
-    font-size: inherit!important;
-    line-height: inherit!important;
+    font-size: inherit !important;
+    line-height: inherit !important;
     margin-left: auto;
+}
+
+:host {
+    grid-area: sidebar;
+}
+
+.create {
+    z-index: 0;
 }

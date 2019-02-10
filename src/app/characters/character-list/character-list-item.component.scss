@@ -2,7 +2,7 @@
     width: 64px;
     height: 64px;
 }
-
+/*
 :host.character-list-item::after {
     position: absolute;
     top: 0;
@@ -28,14 +28,32 @@
 :host.character-list-item:hover,
 :host.character-list-item:focus {
     background-position: right 1% center !important;
-}
+}*/
 
 :host {
+    min-height: min-content;
     display: flex;
     align-items: center;
     padding: 0.5rem 1rem;
 }
 
+:host.no-avatar {
+    min-height: 64px;
+}
+
+:host.list-group-item-secondary,
+:host.list-group-item-secondary:hover {
+    z-index: 1;
+}
+
+:host:hover {
+    z-index: 0;
+}
+
 .header {
     flex-grow: 1;
+}
+
+.header h6 {
+    outline: none;
 }

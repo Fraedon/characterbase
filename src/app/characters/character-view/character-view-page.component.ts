@@ -1,12 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { Title } from "@angular/platform-browser";
+import { Component, OnInit, TemplateRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { Observable } from "rxjs";
-import { UserProfile } from "src/app/auth/shared/auth.model";
+import { first, map, switchMap, tap, zip } from "rxjs/operators";
+import { AuthService } from "src/app/core/auth.service";
 import { CharacterService } from "src/app/core/character.service";
-import { UserService } from "src/app/core/user.service";
-import { MetaUniverse } from "src/app/universes/universe.model";
-import { MetaCharacter } from "../character-resolver.service";
+import { UniverseService } from "src/app/core/universe.service";
+import { CollaboratorRole } from "src/app/universes/shared/collaborator-role.enum";
+import { CollaboratorReference } from "src/app/universes/shared/collaborator.model";
+import { UniverseStateService } from "src/app/universes/shared/universe-state.service";
+import { Universe } from "src/app/universes/shared/universe.model";
+
+import { Character } from "../characters.model";
+import { CharacterStateService } from "../shared/character-state.service";
 
 @Component({
     selector: "cb-character-view-page",
@@ -14,47 +20,65 @@ import { MetaCharacter } from "../character-resolver.service";
     styleUrls: ["./character-view-page.component.scss"],
 })
 export class CharacterViewPageComponent implements OnInit {
-    public character: Observable<MetaCharacter>;
-    public universe: Observable<MetaUniverse>;
-    public universeId: string;
-    public ownerProfile: Observable<UserProfile>;
-
-    public isOwner = false;
-    public isAdmin = false;
+    public canEdit;
+    public character$: Observable<Character>;
+    public collaborator$: Observable<CollaboratorReference>;
+    public deleteModalRef: BsModalRef;
     public showTimestampCreated = false;
+    public universe$: Observable<Universe>;
 
     public constructor(
-        public userService: UserService,
-        public characterService: CharacterService,
-        public route: ActivatedRoute,
-        public router: Router,
-        private titleService: Title
+        private route: ActivatedRoute,
+        private router: Router,
+        private authService: AuthService,
+        private modalService: BsModalService,
+        private characterService: CharacterService,
+        private characterStateService: CharacterStateService,
+        private universeStateService: UniverseStateService,
+        private universeService: UniverseService,
     ) {}
 
     public ngOnInit() {
-        this.route.data.subscribe(
-            (data: { character: Observable<MetaCharacter>; universe: Observable<MetaUniverse> }) => {
-                this.character = data.character;
-                this.universe = data.universe;
-                this.character.first().subscribe((character) => {
-                    this.titleService.setTitle(character.data.name);
-                    this.ownerProfile = this.userService.getProfile(character.data.owner);
-                    this.userService.user.first().subscribe((user) => {
-                        this.isOwner = user.uid === character.data.owner;
-                        this.universe.first().subscribe((universe) => {
-                            this.isAdmin = user.uid === universe.data.owner;
-                        });
-                    });
-                });
-            }
-        );
+        this.route.data.subscribe((data: { character: Observable<Character>; universe: Universe }) => {
+            this.character$ = data.character;
+            this.universe$ = this.universeStateService.getUniverses().pipe(
+                map((universes) => universes.find((u) => u.id === data.universe.id)),
+                tap((u) => {
+                    this.collaborator$ = this.universeService.getMe(u.id);
+                    this.canEdit = this.collaborator$.pipe(
+                        zip(this.character$),
+                        tap((v) => {
+                            this.canEdit =
+                                v[0].role === CollaboratorRole.Owner ||
+                                v[0].role === CollaboratorRole.Admin ||
+                                v[0].userId === v[1].owner.id;
+                        }),
+                    );
+                }),
+            );
+        });
     }
 
-    public async deleteCharacter(name: string, characterId: string, universeId: string) {
-        const confirmation = confirm(`Are you SURE you want to delete ${name}?\n\n` + "This action is irreversible.");
-        if (confirmation) {
-            await this.router.navigate(["/u", universeId]);
-            await this.characterService.deleteCharacter(characterId);
+    public onDelete() {
+        if (this.deleteModalRef) {
+            this.deleteModalRef.hide();
         }
+        this.universe$.pipe(first()).subscribe((u) => {
+            this.character$.pipe(first()).subscribe((c) => {
+                this.characterService.deleteCharacter(u.id, c.id).subscribe(
+                    () => {
+                        this.characterStateService.removeCharacter(c.id);
+                        this.router.navigate(["/u", u.id], { relativeTo: this.route });
+                    },
+                    (err) => {
+                        alert(err);
+                    },
+                );
+            });
+        });
+    }
+
+    public openModal(template: TemplateRef<any>) {
+        this.deleteModalRef = this.modalService.show(template);
     }
 }

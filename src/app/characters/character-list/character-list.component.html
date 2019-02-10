@@ -1,30 +1,27 @@
-<ng-container [ngSwitch]="mode">
-    <div class="list-group mb-2" *ngSwitchCase="CharacterListMode.List">
-        <a
-            cb-character-list-item
-            *ngFor="let character of sortedCharacters"
-            [character]="character"
-            [mode]="mode"
-            [caption]="character && getListCaption(character)"
-            [routerLink]="['c', character.meta.id]"
-            [sort]="query"
-        ></a>
-    </div>
-    <div class="btn-toolbar">
-        <a
-            class="btn btn-link mr-2"
-            [routerLink]=""
-            [queryParams]="{ b: characters[0].meta.id }"
-            *ngIf="canMovePrevious"
-        >
-            Previous
-        </a>
-        <a
-            class="btn btn-link"
-            [routerLink]=""
-            [queryParams]="{ a: characters[characters.length - 1].meta.id }"
-            *ngIf="canMoveNext"
-            >Next</a
-        >
-    </div>
-</ng-container>
+<cb-character-list-toolbar
+    [universe]="universe"
+    class="border-bottom"
+    (search)="search.emit($event)"
+></cb-character-list-toolbar>
+<div class="list-group overflow-auto" [class.list-group-flush]="flush" *ngIf="characters.length; else noCharacters">
+    <a
+        cb-character-list-item
+        *ngFor="let character of characters; last as isLast"
+        [character]="character"
+        [routerLink]="['c', character.id]"
+        [showAvatar]="universe.settings.allowAvatars"
+        routerLinkActive="list-group-item-secondary"
+    ></a>
+</div>
+<ng-template #noCharacters>
+    <p class="text-muted text-center mb-0 mt-4">
+        There don't appear to be any characters.<br />
+        <a [routerLink]="['c', 'new']">Why not create one?</a>
+    </p>
+</ng-template>
+<pagination
+    [totalItems]="total"
+    [itemsPerPage]="pageLimit"
+    *ngIf="total > pageLimit"
+    (pageChanged)="page.emit($event.page)"
+></pagination>

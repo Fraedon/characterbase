@@ -16,6 +16,6 @@ export class UniverseLandingPageComponent implements OnInit, OnDestroy {
 
     public ngOnInit() {
         this.titleService.setTitle("CharacterBase");
-        this.landingService.setBackground(`url(assets/landings/v0.3.0.jpg)`);
+        this.landingService.setBackground(`url(assets/landings/v0.4.0.jpg)`);
     }
 }

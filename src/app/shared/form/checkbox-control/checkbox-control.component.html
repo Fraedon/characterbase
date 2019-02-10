@@ -1,0 +1,26 @@
+<div class="form-group" [class.row]="horizontal" [class.mb-0]="compressed">
+    <label [for]="controlId" [ngClass]="{ 'col-sm-2 mb-0': horizontal }" *ngIf="horizontal">{{ name }}</label>
+    <div [class.col-sm-10]="horizontal">
+        <div class="form-check">
+            <input
+                [ngClass]="['form-check-input', getSize()]"
+                [id]="controlId"
+                [autofocus]="autofocus"
+                type="checkbox"
+                (change)="setValue(c.checked)"
+                (blur)="onTouched()"
+                [checked]="value"
+                [disabled]="disabled"
+                #c
+            />
+            <label class="form-check-label" [for]="controlId">{{ horizontal ? label : name }}</label>
+            <label class="float-right">
+                <ng-container
+                    [ngTemplateOutlet]="labelToolbar"
+                    [ngTemplateOutletContext]="labelToolbarContext"
+                ></ng-container>
+            </label>
+        </div>
+        <small class="text-muted form-text" *ngIf="help">{{ help }}</small>
+    </div>
+</div>

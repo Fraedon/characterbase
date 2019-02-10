@@ -12,3 +12,41 @@
     max-height: 100px !important;
     filter: opacity(0.4);
 }
+
+.upload {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+.delete {
+    position: absolute;
+    z-index: 2;
+    top: 5px;
+    right: 5px;
+    background-color: #343a40;
+    border-radius: 0.25rem;
+    padding: 0 0.4rem !important;
+}
+
+.upload.has-image {
+    opacity: 0;
+}
+
+.upload.has-image:hover {
+    opacity: 1;
+}
+
+.upload:hover::before {
+    display: block;
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.75);
+    left: 0;
+    top: 0;
+    border-radius: 0.25rem;
+    z-index: -1;
+}

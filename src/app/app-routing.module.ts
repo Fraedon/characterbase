@@ -8,7 +8,11 @@ import { SignupPageComponent } from "./auth/signup/signup-page.component";
 const routes: Routes = [
     { component: LoginPageComponent, path: "login" },
     { component: SignupPageComponent, path: "signup" },
-    { canLoad: [AuthGuard], loadChildren: "./universes/universes.module#UniversesModule", path: "" },
+    {
+        canLoad: [AuthGuard],
+        loadChildren: "./universes/universes.module#UniversesModule",
+        path: "",
+    },
 ];
 
 @NgModule({

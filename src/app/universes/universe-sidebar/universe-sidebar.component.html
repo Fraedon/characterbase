@@ -3,23 +3,16 @@
 </div>
 <div class="list-group-item profile-item small">
     <i class="fas fa-user mr-2"></i>{{ userDisplayName ? (userDisplayName | truncate: 18) : "" }}
-    <div class="profile-actions" dropdown placement="right">
-        <button type="button" class="btn btn-link btn-sm pr-0 text-body" dropdownToggle>
-            <i class="fas fa-bars"></i>
-        </button>
-        <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
-            <div>
-                <a class="dropdown-item" routerLink="/settings"><i class="fas fa-cog mr-2"></i>Settings</a>
-            </div>
-            <div class="dropdown-divider"></div>
-            <button class="dropdown-item text-danger clickable" type="button" (click)="doLogOut()">
-                <i class="fas fa-sign-out-alt mr-2"></i>Log out
-            </button>
-        </div>
+    <div class="profile-actions">
+        <a routerLink="/settings"><i class="fas fa-cog mr-2 text-muted"></i></a>
+        <i class="fas fa-sign-out-alt clickable text-danger" (click)="doLogOut()"></i>
     </div>
 </div>
 <cb-universe-list [universes]="universes"></cb-universe-list>
-<a class="list-group-item list-group-item-action text-primary text-center" routerLink="/u/new">
+<a class="list-group-item list-group-item-action text-primary text-center create" routerLink="/u/new">
     <i class="fas fa-plus mr-2"></i>Create a new universe...
 </a>
-<p class="text-center mt-auto pt-3 text-muted text-monospace">{{ version }}</p>
+<p class="text-center mt-auto pt-3 text-muted text-monospace">
+    <a href="https://github.com/Fraedon/characterbase" target="_blank"><i class="text-muted fab fa-github mr-3"></i></a
+    >{{ version }}
+</p>

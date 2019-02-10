@@ -1,12 +1,7 @@
 <form [formGroup]="loginForm" (submit)="onLogin()" #form="ngForm">
     <div class="alert alert-danger" *ngIf="status.error">{{ status.error }}</div>
-    <cb-input-control
-        name="Email Address"
-        type="email"
-        [autofocus]="true"
-        formControlName="emailAddress"
-    ></cb-input-control>
+    <cb-input-control name="Email Address" type="email" [autofocus]="true" formControlName="email"></cb-input-control>
     <cb-input-control name="Password" type="password" formControlName="password"></cb-input-control>
-    <cb-submit-button text="Login" [canSubmit]="canSubmit" [loading]="status.loading"></cb-submit-button>
+    <cb-submit-button text="Login" [state]="getSubmitState()" fluid="true"></cb-submit-button>
     <div class="text-center mt-2"><a routerLink="/signup">or create an account...</a></div>
 </form>

@@ -1,25 +1,12 @@
-<form [formGroup]="universeForm" (submit)="onCreate()" #form="ngForm">
-    <div class="alert alert-danger" *ngIf="status.error">{{ status.error }}</div>
-    <div class="form-group row">
-        <label for="name" class="col-sm-2 col-form-label col-form-label-lg">Name</label>
-        <div class="col-sm-10">
-            <input class="form-control form-control-lg" type="text" id="name" formControlName="name" autofocus />
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="description" class="col-sm-2 col-form-label col-form-label-lg">Description</label>
-        <div class="col-sm-10">
-            <textarea
-                class="form-control"
-                type="text"
-                id="description"
-                rows="8"
-                formControlName="description"
-            ></textarea>
-            <button type="submit" class="btn btn-primary mt-3" [disabled]="!canSubmit">
-                <ng-container *ngIf="!status.loading; else: loadingBlock">Create</ng-container>
-                <ng-template #loadingBlock><i class="fa fa-spinner fa-spin"></i></ng-template>
-            </button>
-        </div>
-    </div>
+<form [formGroup]="universeForm" (submit)="onSubmit()">
+    <cb-form-status [status]="status"></cb-form-status>
+    <cb-input-control name="Name" formControlName="name" size="large" horizontal="true"></cb-input-control>
+    <cb-textarea-control
+        name="Description"
+        formControlName="description"
+        horizontal="true"
+        rows="6"
+    ></cb-textarea-control>
+    <hr />
+    <cb-submit-button text="Create universe" [state]="getSubmitState()"></cb-submit-button>
 </form>

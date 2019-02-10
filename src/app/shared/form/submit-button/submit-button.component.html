@@ -1,6 +1,4 @@
-<button type="submit" class="btn btn-primary btn-block" [disabled]="!canSubmit">
-    <ng-container *ngIf="!loading; else: loadingBlock">
-        {{ disabled ? (textDisabled || text ? text : "Submit") : text || "Submit" }}
-    </ng-container>
-    <ng-template #loadingBlock> <i class="fas fa-spinner fa-spin"></i> {{ textLoading }} </ng-template>
+<button type="submit" [ngClass]="['btn btn-primary', getFluid()]" [disabled]="isDisabled()">
+    <ng-container *ngIf="state !== SubmitButtonState.Loading; else loadingBlock"> {{ getText() }} </ng-container>
+    <ng-template #loadingBlock> <i class="fas fa-spinner fa-spin"></i> {{ getText() }} </ng-template>
 </button>

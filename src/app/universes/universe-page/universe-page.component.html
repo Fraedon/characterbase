@@ -1,42 +1,37 @@
-<div
-    class="container dashboard-container"
-    *ngIf="
-        {
-            characters: characters$ | async,
-            universe: universe$ | async,
-            owner: owner$ | async,
-            query: query$ | async
-        };
-        let data
-    "
->
-    <div class="universe-header mb-2">
-        <span class="universe-header-title">
-            <h1 class="mr-2">{{ data.universe?.data.name }}</h1>
-            <p class="mb-0 text-muted">Owned by {{ data.owner }}</p>
-        </span>
-        <span class="universe-header-nav">
-            <h5>{{ data.universe?.data.numCharacters }}<i class="fas fa-users ml-2"></i></h5>
-            <h5 class="ml-4">
-                {{ data.universe?.data.collaborators.length + 1 }}<i class="fas fa-user-edit ml-2"></i>
-            </h5>
-            <h5 class="ml-4" *ngIf="data.isOwner">
-                <a routerLink="edit"><i class="fas fa-cog"></i></a>
-            </h5>
-        </span>
+<ng-container *ngIf="{ characters: characters$ | async, universe: universe$ | async } as data">
+    <ng-template #trailing>
+        <p class="ml-2 mb-0 text-muted">Owned by {{ getOwner().user.displayName }}</p>
+        <h5 class="ml-auto">{{ totalCharacters }}<i class="fas fa-users ml-2"></i></h5>
+        <h5 class="ml-4">{{ collaborators.length }}<i class="fas fa-user-edit ml-2"></i></h5>
+        <h5 class="ml-4" *ngIf="isOwner()">
+            <a routerLink="edit/general"><i class="fas fa-cog text-body"></i></a>
+        </h5>
+    </ng-template>
+    <ng-template #content>
+        <p
+            class="lead text-muted"
+            [class.clickable]="canToggleDescription(data.universe.description)"
+            (click)="toggleDescription()"
+        >
+            {{
+                descriptionHidden && canToggleDescription(data.universe.description)
+                    ? (data.universe.description | truncate: 240)
+                    : data.universe.description
+            }}
+        </p>
+    </ng-template>
+    <cb-header [title]="data.universe.name" [content]="content" [trailing]="trailing"></cb-header>
+    <div class="list border-right">
+        <cb-character-list
+            [characters]="data.characters"
+            flush="true"
+            [universe]="data.universe"
+            (search)="onSearch($event)"
+            (page)="onPage($event)"
+            [total]="totalCharacters"
+        ></cb-character-list>
     </div>
-    <p class="lead text-muted">{{ data.universe?.data.description }}</p>
-    <hr />
-    <cb-character-toolbar
-        *ngIf="data.universe"
-        [query]="data.query"
-        [guideGroups]="data.universe?.data.guide.groups"
-    ></cb-character-toolbar>
-    <cb-character-list
-        *ngIf="data.characters"
-        [mode]="CharacterListMode.List"
-        [characters]="data.characters"
-        [query]="data.query"
-        [total]="data.universe?.data.numCharacters"
-    ></cb-character-list>
-</div>
+    <div class="view">
+        <router-outlet></router-outlet>
+    </div>
+</ng-container>

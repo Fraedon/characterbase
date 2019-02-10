@@ -1,0 +1,17 @@
+.cdk-drop-list-dragging cb-universe-edit-guide-field:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+:host {
+    display: block;
+}
+
+input.ng-invalid:not(.ng-dirty),
+textarea.ng-invalid:not(.ng-dirty) {
+    border-color: #ffc107;
+}
+
+input.ng-invalid:not(.ng-dirty):focus,
+textarea.ng-invalid:not(.ng-dirty):focus {
+    box-shadow: 0 0 0 0.2rem rgba(216, 203, 22, 0.25);
+}

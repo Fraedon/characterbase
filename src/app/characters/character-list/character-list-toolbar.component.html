@@ -1,0 +1,9 @@
+<input
+    type="text"
+    class="search w-100"
+    [placeholder]="'Search ' + universe.name + '…'"
+    (input)="search.emit($event.target.value)"
+    autofocus
+    size="1"
+/>
+<a class="btn btn-primary text-white new" [routerLink]="['c', 'new']"><i class="fas fa-user-plus"></i></a>

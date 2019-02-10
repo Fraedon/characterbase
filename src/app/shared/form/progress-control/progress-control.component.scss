@@ -1,0 +1,14 @@
+:host.ng-invalid.ng-touched.ng-dirty input,
+:host.ng-invalid.ng-touched.ng-dirty textarea {
+    border-color: #dc3545;
+}
+
+:host.ng-invalid.ng-touched.ng-dirty input:focus,
+:host.ng-invalid.ng-touched.ng-dirty textarea:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+:host textarea {
+    resize: none;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}

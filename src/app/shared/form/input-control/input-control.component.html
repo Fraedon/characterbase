@@ -1,12 +1,22 @@
-<div class="form-group">
-    <label [for]="controlId">{{ name }}</label>
+<ng-template #input>
     <input
-        class="form-control"
-        type="text"
+        [ngClass]="['form-control', getSize()]"
         [id]="controlId"
         [autofocus]="autofocus"
         [type]="type || 'text'"
         (input)="setValue($event.target.value)"
         (blur)="onTouched()"
+        [value]="innerValue"
+        [disabled]="disabled"
     />
+    <small class="text-muted form-text" *ngIf="help">{{ help }}</small>
+</ng-template>
+<div class="form-group" [class.row]="horizontal">
+    <label [for]="controlId" [ngClass]="{ 'col-sm-2 col-form-label': horizontal }">{{ name }}</label>
+    <label class="float-right">
+        <ng-container [ngTemplateOutlet]="labelToolbar" [ngTemplateOutletContext]="labelToolbarContext"></ng-container>
+    </label>
+    <div class="col-sm-10 my-auto" *ngIf="horizontal; else input">
+        <ng-container *ngTemplateOutlet="input"></ng-container>
+    </div>
 </div>

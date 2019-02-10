@@ -4,7 +4,7 @@ import { FormArray, FormGroup, ValidatorFn } from "@angular/forms";
 export function uniqueControlNamesValidator(): ValidatorFn {
     return (groups: FormArray) => {
         const groupNames = new Set();
-        let failedName = undefined;
+        let failedName: string;
         groups.controls.forEach((group: FormGroup) => {
             const name = group.get("name").value;
             if (groupNames.has(name)) {

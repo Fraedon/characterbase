@@ -12,9 +12,8 @@ interface Timestamp {
     name: "relativeTime",
 })
 export class RelativeTimePipe implements PipeTransform {
-    transform(value: Timestamp): any {
-        const date = value.toDate();
+    public transform(value: Timestamp): any {
         // @ts-ignore
-        return dayjs().to(dayjs(date));
+        return dayjs().to(dayjs(value));
     }
 }

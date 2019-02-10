@@ -1,0 +1,19 @@
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
+.fields {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+header {
+    border-top: 1px solid #c6c8ca;
+    border-bottom: 1px solid #c6c8ca;
+}
+
+.alert:hover .close {
+    opacity: 0.75;
+}

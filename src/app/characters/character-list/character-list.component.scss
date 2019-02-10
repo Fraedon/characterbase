@@ -1,4 +1,21 @@
-.list-group {
+:host {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.list-group a:first-child {
+    border-top: 0;
+}
+
+.list-group a:last-child {
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.list-group a.list-group-item-secondary:last-child {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+pagination {
+    margin: 1rem auto 0;
 }

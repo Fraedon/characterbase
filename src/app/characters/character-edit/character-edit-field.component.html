@@ -1,0 +1,106 @@
+<ng-template #toolbar>
+    <small class="text-muted form-text mr-2 d-none d-lg-inline-block" *ngIf="universeField.description">{{
+        universeField.description
+    }}</small>
+    <i
+        class="fas fa-question-circle mr-2 d-md-inline-block d-lg-none clickable align-middle"
+        *ngIf="universeField.description"
+        [tooltip]="universeField.description"
+        triggers="click"
+    ></i>
+    <i
+        *ngIf="!universeField.required"
+        class="far mr-2 clickable align-middle"
+        [class.text-muted]="field.disabled"
+        [class.fa-check-circle]="field.enabled"
+        [class.fa-circle]="field.disabled"
+        (click)="toggleField()"
+        title="This field will be {{ field.enabled ? 'included' : 'not included' }} when viewing this character"
+    ></i>
+    <i
+        class="fas align-middle"
+        [class.clickable]="field.enabled"
+        [class.fa-eye]="!field.get('hidden').value"
+        [class.text-muted]="field.get('hidden').value || field.disabled"
+        [class.fa-eye-slash]="field.get('hidden').value || field.disabled"
+        (click)="toggleFieldHidden()"
+        title="This field will be {{ field.get('hidden').value ? 'hidden' : 'shown' }} to other collaborators"
+    ></i>
+</ng-template>
+<ng-template #markdownTip>
+    This field supports
+    <a href="https://www.markdownguide.org/cheat-sheet" target="_blank">
+        <i class="fab fa-markdown mx-1"></i>Markdown styling
+    </a>
+</ng-template>
+<ng-container [formGroup]="field">
+    <ng-container [ngSwitch]="getType()">
+        <cb-input-control
+            [name]="name"
+            formControlName="value"
+            *ngSwitchCase="CharacterFieldType.Text"
+            [labelToolbar]="toolbar"
+        ></cb-input-control>
+        <cb-textarea-control
+            [name]="name"
+            formControlName="value"
+            rows="5"
+            *ngSwitchCase="CharacterFieldType.Description"
+            [labelToolbar]="toolbar"
+            [help]="universeField.meta['markdown'] && markdownTip"
+        ></cb-textarea-control>
+        <cb-input-control
+            [name]="name"
+            type="number"
+            formControlName="value"
+            *ngSwitchCase="CharacterFieldType.Number"
+            [labelToolbar]="toolbar"
+            [labelToolbarContext]="{ field: field }"
+        ></cb-input-control>
+        <cb-checkbox-control
+            [name]="name"
+            formControlName="value"
+            *ngSwitchCase="CharacterFieldType.Toggle"
+            [labelToolbar]="toolbar"
+            [labelToolbarContext]="{ field: field }"
+        ></cb-checkbox-control>
+        <div class="form-group" *ngSwitchCase="CharacterFieldType.Options">
+            <label>{{ universeField.name }}</label>
+            <label class="float-right"><ng-container [ngTemplateOutlet]="toolbar"></ng-container></label>
+            <select
+                class="custom-select"
+                *ngIf="universeField.meta['multiple']; else singleSelect"
+                formControlName="value"
+                [size]="universeField.meta['options'].length > 10 ? 10 : universeField.meta['options'].length"
+                multiple
+            >
+                <option *ngFor="let option of universeField.meta['options']" [value]="option">{{ option }}</option>
+            </select>
+            <ng-template #singleSelect>
+                <select class="custom-select" formControlName="value">
+                    <option selected value="" disabled>Select an option...</option>
+                    <option *ngFor="let option of universeField.meta['options']" [value]="option">{{ option }}</option>
+                </select>
+            </ng-template>
+        </div>
+        <cb-progress-control
+            [name]="name"
+            formControlName="value"
+            *ngSwitchCase="CharacterFieldType.Progress"
+            [min]="universeField.meta['min']"
+            [max]="universeField.meta['max']"
+            [step]="universeField.meta['tick']"
+            [labelToolbar]="toolbar"
+            [labelToolbarContext]="{ field: field }"
+        ></cb-progress-control>
+        <cb-input-control
+            [name]="name"
+            formControlName="value"
+            *ngSwitchCase="CharacterFieldType.List"
+            list="true"
+            help="This field supports multiple entries. Separate them with a comma (e.g. red, green, blue)"
+            [labelToolbar]="toolbar"
+            [labelToolbarContext]="{ field: field }"
+        ></cb-input-control>
+    </ng-container>
+</ng-container>

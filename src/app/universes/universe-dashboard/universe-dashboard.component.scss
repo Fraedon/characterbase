@@ -1,4 +1,13 @@
 .universe-dashboard-content {
-    overflow: scroll;
+    // overflow: scroll;
+    height: 100%;
     background-size: cover;
+}
+
+:host {
+    /*display: grid;
+    grid-template-columns: 256px 40% auto;
+    grid-template-rows: min-content auto auto;
+    grid-template-areas: "sidebar header header" "sidebar list view" "sidebar list view";*/
+    display: flex;
 }

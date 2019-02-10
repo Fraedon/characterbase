@@ -1,4 +1,7 @@
 <div class="title-divider">
-    <small class="title-divider-text text-muted">{{text}}</small>
-    <hr class="title-divider-line">
+    <small class="title-divider-text text-muted">{{ text }}</small>
+    <hr class="title-divider-line" />
+    <span class="ml-2 d-flex" *ngIf="dividerToolbar"
+        ><ng-container *ngTemplateOutlet="dividerToolbar"></ng-container
+    ></span>
 </div>

@@ -1,14 +1,18 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/firestore";
 import { combineLatest } from "rxjs";
 import { from, Observable } from "rxjs";
 import "rxjs/add/observable/merge";
-import { merge, zip } from "rxjs/operators";
+import { first, map, merge, tap, zip } from "rxjs/operators";
+import { environment } from "src/environments/environment";
 
 import { CharacterFieldType } from "../characters/characters.model";
-import { MetaUniverse, Universe } from "../universes/universe.model";
+import { CollaboratorRole } from "../universes/shared/collaborator-role.enum";
+import { Collaborator, CollaboratorReference } from "../universes/shared/collaborator.model";
+import { MetaUniverse, Universe } from "../universes/shared/universe.model";
 
-import { UserService } from "./user.service";
+import { AuthService } from "./auth.service";
 
 @Injectable({
     providedIn: "root",
@@ -16,124 +20,68 @@ import { UserService } from "./user.service";
 export class UniverseService {
     private userUniverses: Observable<MetaUniverse[]>;
 
-    constructor(private firestore: AngularFirestore, private userService: UserService) {
-        this.userUniverses = this.loadUserUniverses();
+    constructor(private authService: AuthService, private http: HttpClient) {
+        // this.userUniverses = this.loadUserUniverses();
     }
 
-    public createUniverse(data: Partial<Universe>): Observable<MetaUniverse> {
-        const newUniverse = { ...this.createTemplateUniverse(), ...data };
-        return from(this.firestore.collection("/universes").add(newUniverse))
-            .mergeMap((ref) => from(ref.get()))
-            .map((doc) => ({
-                data: doc.data() as Universe,
-                meta: {
-                    id: doc.id,
-                },
-            }));
+    public addCollaborator(universeId: string, input: { email?: string; id?: string }) {
+        return this.http
+            .post<Collaborator>(`${environment.apiEndpoint}/universes/${universeId}/collaborators`, input)
+            .pipe(first());
     }
 
-    public async deleteUniverse(id: string) {
-        return await this.firestore
-            .collection("/universes")
-            .doc(id)
-            .delete();
+    public createTemplateUniverse(): Partial<Universe> {
+        return {};
     }
 
-    public deleteUniverseCharacters(id: string) {
-        const characters = this.firestore.collection("/characters", (ref) => ref.where("universe", "==", id)).get();
-        return characters.first().map((query) => {
-            const batch = this.firestore.firestore.batch();
-            query.forEach((doc) => {
-                batch.delete(doc.ref);
-            });
-            batch.commit();
-        });
+    public createUniverse(data: Partial<Universe>): Observable<Universe> {
+        const payload = { ...this.createTemplateUniverse(), ...data };
+        return this.http.post<Universe>(`${environment.apiEndpoint}/universes`, payload).pipe(first());
     }
 
-    public getUniverse(id: string): Observable<MetaUniverse> {
-        return this.firestore
-            .doc(`/universes/${id}`)
-            .snapshotChanges()
-            .map((doc) => ({
-                data: doc.payload.data() as Universe,
-                meta: {
-                    id: doc.payload.id,
-                },
-            }));
+    public deleteCharacters(universeId: string) {
+        return this.http.delete<null>(`${environment.apiEndpoint}/universes/${universeId}/characters`).pipe(first());
     }
 
-    public getUserUniverses(): Observable<MetaUniverse[]> {
-        return this.userUniverses;
+    public deleteUniverse(id: string) {
+        return this.http.delete<null>(`${environment.apiEndpoint}/universes/${id}`).pipe(first());
     }
 
-    public async updateUniverse(id: string, data: Partial<Universe>) {
-        await this.firestore.doc(`/universes/${id}`).update(data);
-    }
-
-    private createTemplateUniverse(): Universe {
-        return {
-            advanced: {
-                allowAvatar: true,
-                titleField: "Name",
-            },
-            collaborators: [],
-            description: "",
-            guide: {
-                groups: [
-                    {
-                        fields: [
-                            {
-                                info: "A short summary about this character",
-                                markdown: true,
-                                maxLength: 8000,
-                                minLength: 0,
-                                name: "Description",
-                                required: true,
-                                type: CharacterFieldType.Description,
-                            },
-                        ],
-                        name: "General",
-                    },
-                ],
-            },
-            name: "",
-            numCharacters: 0,
-            owner: {
-                name: "",
-                id: "",
-            },
-        };
-    }
-
-    private loadUserUniverses() {
-        return this.userService.user
-            .mergeMap((user) => {
-                return combineLatest(
-                    this.firestore
-                        .collection("/universes", (ref) => ref.where("owner.id", "==", user.uid))
-                        .snapshotChanges()
-                        .map((docs) =>
-                            docs.map((doc) => ({
-                                data: doc.payload.doc.data() as Universe,
-                                meta: {
-                                    id: doc.payload.doc.id,
-                                },
-                            }))
-                        ),
-                    this.firestore
-                        .collection("/universes", (ref) => ref.where("collaborators", "array-contains", user.email))
-                        .snapshotChanges()
-                        .map((docs) =>
-                            docs.map((doc) => ({
-                                data: doc.payload.doc.data() as Universe,
-                                meta: {
-                                    id: doc.payload.doc.id,
-                                },
-                            }))
-                        )
-                );
+    public editCollaborator(universeId: string, userId: string, role: CollaboratorRole) {
+        return this.http
+            .patch<Collaborator>(`${environment.apiEndpoint}/universes/${universeId}/collaborators`, {
+                id: userId,
+                role,
             })
-            .map((universes) => [...universes[0], ...universes[1]])
-            .shareReplay(1);
+            .pipe(first());
+    }
+
+    public getCollaborators(universeId: string) {
+        return this.http
+            .get<{ collaborators: Collaborator[] }>(`${environment.apiEndpoint}/universes/${universeId}/collaborators`)
+            .pipe(
+                first(),
+                map((data) => data.collaborators),
+            );
+    }
+
+    public getMe(universeId: string) {
+        return this.http
+            .get<CollaboratorReference>(`${environment.apiEndpoint}/universes/${universeId}/me`)
+            .pipe(first());
+    }
+
+    public getUniverse(id: string): Observable<Universe> {
+        return this.http.get<Universe>(`${environment.apiEndpoint}/universes/${id}`).pipe(first());
+    }
+
+    public removeCollaborator(universeId: string, id: string) {
+        return this.http
+            .delete<null>(`${environment.apiEndpoint}/universes/${universeId}/collaborators`, { params: { id } })
+            .pipe(first());
+    }
+
+    public updateUniverse(id: string, data: Partial<Universe>) {
+        return this.http.patch<Universe>(`${environment.apiEndpoint}/universes/${id}`, data).pipe(first());
     }
 }

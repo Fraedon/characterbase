@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
-import { MetaUniverse } from "../universe.model";
+
+import { Universe, UniverseReference } from "../shared/universe.model";
 
 @Component({
     selector: "cb-universe-list",
@@ -7,7 +8,19 @@ import { MetaUniverse } from "../universe.model";
     styleUrls: ["./universe-list.component.scss"],
 })
 export class UniverseListComponent {
-    @Input() universes: MetaUniverse[];
+    @Input() public universes: UniverseReference[];
 
     public constructor() {}
+
+    public getGlobe(i: number) {
+        if (i % 4 === 0) {
+            return "globe-americas";
+        } else if (i % 3 === 0) {
+            return "globe-asia";
+        } else if (i % 2 === 0) {
+            return "globe-europe";
+        } else {
+            return "globe-africa";
+        }
+    }
 }

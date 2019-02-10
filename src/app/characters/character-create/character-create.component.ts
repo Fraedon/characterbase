@@ -1,88 +1,69 @@
-import { Component, OnInit } from "@angular/core";
-import { AngularFireAuth } from "@angular/fire/auth";
-import { AngularFirestore } from "@angular/fire/firestore";
-import { AngularFireStorage } from "@angular/fire/storage";
+import { Component, EventEmitter, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { combineLatest, Observable } from "rxjs";
+import { Observable } from "rxjs";
+import { finalize, first, map } from "rxjs/operators";
+import { AuthService } from "src/app/core/auth.service";
 import { CharacterService } from "src/app/core/character.service";
-import { UniverseService } from "src/app/core/universe.service";
-import { UserService } from "src/app/core/user.service";
 import { CanComponentDeactivate } from "src/app/shared/can-deactivate.guard";
 import { FormStatus } from "src/app/shared/form-status.model";
-import { MetaUniverse, Universe } from "src/app/universes/universe.model";
-import { CharacterEditMode } from "../character-edit/character-edit-form.component";
-import { CharacterResolverService } from "../character-resolver.service";
+import { UniverseStateService } from "src/app/universes/shared/universe-state.service";
+import { MetaUniverse, Universe } from "src/app/universes/shared/universe.model";
+
 import { Character } from "../characters.model";
+import { CharacterStateService } from "../shared/character-state.service";
 
 @Component({
     selector: "cb-character-create",
     templateUrl: "./character-create.component.html",
+    styleUrls: ["./character-create.component.scss"],
 })
 export class CharacterCreateComponent implements OnInit, CanComponentDeactivate {
-    public universe: MetaUniverse;
-    public status: FormStatus = { error: null, loading: false };
-
-    public CharacterEditMode = CharacterEditMode;
-    private unsavedChanges = false;
-    private unsavedChangesFirstEmit = false;
+    public formState: "dirty" | "pristine";
+    public reset = new EventEmitter<null>();
+    public status: FormStatus = { loading: false };
+    public universe$: Observable<Universe>;
 
     public constructor(
         public route: ActivatedRoute,
         public router: Router,
-        public storage: AngularFireStorage,
-        private userService: UserService,
-        private characterService: CharacterService
+        private characterService: CharacterService,
+        private characterStateService: CharacterStateService,
+        private universeStateService: UniverseStateService,
     ) {}
 
     public canDeactivate() {
-        if (this.unsavedChanges) {
+        if (this.formState === "dirty") {
             return confirm("You have unsaved changes. Are you sure you want to leave this page?");
         }
         return true;
     }
 
     public ngOnInit() {
-        this.route.data.subscribe((data: { universe: Observable<MetaUniverse> }) => {
-            data.universe.first().subscribe((universe) => {
-                this.universe = universe;
-            });
+        this.route.data.pipe(first()).subscribe((data: { universe: Universe }) => {
+            this.universe$ = this.universeStateService
+                .getUniverses()
+                .pipe(map((universes) => universes.find((u) => u.id === data.universe.id)));
         });
     }
 
-    public setUnsavedChanges(unsavedChanges: boolean) {
-        if (!this.unsavedChangesFirstEmit) {
-            this.unsavedChangesFirstEmit = true;
-        } else {
-            this.unsavedChanges = true;
-        }
-    }
+    public onCreate(data: { avatar?: File; data: Partial<Character> }) {
+        this.status = { loading: true, error: null, success: null };
 
-    public async onCreated(data: { character: Partial<Character>; images: { [key: string]: File } }) {
-        this.status = { error: null, loading: true };
-        try {
-            this.userService.user.subscribe((user) => {
-                const characterData = {
-                    ...data.character,
-                    owner: user.uid,
-                    universe: this.universe.meta.id,
-                } as Partial<Character>;
-                const newCharacter = this.characterService.createCharacter(
-                    this.universe.meta.id,
-                    characterData,
-                    data.images
-                );
-                newCharacter.subscribe(
-                    (newChar) => {
-                        this.unsavedChanges = false;
-                        this.router.navigate(["/u", this.universe.meta.id, "c", newChar.meta.id]);
+        this.universe$.subscribe((u) => {
+            this.characterService
+                .createCharacter(u.id, data.data, data.avatar)
+                .pipe()
+                .subscribe(
+                    (character) => {
+                        this.formState = "pristine";
+                        this.router.navigate(["..", character.id], { relativeTo: this.route });
+                        this.characterStateService.addCharactersWithReferences(character);
                     },
                     (err) => {
-                        throw err;
-                    }
+                        this.status.loading = false;
+                        this.status.error = err;
+                    },
                 );
-            });
-        } catch (err) {
-            this.status.error = err;
-        }
+        });
     }
 }

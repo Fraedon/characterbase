@@ -1,5 +1,21 @@
+<button
+    type="button"
+    class="btn btn-link card-link text-dark upload"
+    [class.has-image]="imageSrc || (initialImage && !initialImageDeleted)"
+    (click)="f.click()"
+>
+    <i class="fas fa-upload mr-2"></i>Upload {{ title | titlecase }}
+</button>
+<button
+    *ngIf="canDelete"
+    type="button"
+    class="btn btn-link text-danger card-link p-0 delete"
+    (click)="removeImage(true, true)"
+>
+    <i class="fas fa-times"></i>
+</button>
 <img
-    class="card-img-top"
+    class="card-img"
     [src]="imageSrc ? imageSrc : initialImage ? (!initialImageDeleted ? initialImage : '') : ''"
     [class.minimized]="canMinimize ? minimized : false"
     [class.clickable]="canMinimize"
@@ -9,16 +25,5 @@
     #i
 />
 <div class="card-body p-2 text-center">
-    <button type="button" class="btn btn-link card-link p-0" (click)="f.click()">
-        <i class="fas fa-camera mr-2"></i>Upload {{ title | titlecase }}
-    </button>
-    <button
-        *ngIf="canDelete"
-        type="button"
-        class="btn btn-link text-danger card-link p-0"
-        (click)="removeImage(true, true)"
-    >
-        <i class="fas fa-times"></i>
-    </button>
     <input type="file" class="custom-file-input d-none" accept="image/*" (change)="onUploadAvatar($event)" #f />
 </div>

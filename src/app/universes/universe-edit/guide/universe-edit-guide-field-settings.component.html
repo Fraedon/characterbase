@@ -1,0 +1,128 @@
+<ng-container [formGroup]="field">
+    <cb-checkbox-control name="Required" formControlName="required" horizontal="true"></cb-checkbox-control>
+    <cb-input-control
+        name="Description"
+        horizontal="true"
+        formControlName="description"
+        help="A helpful description that will be displayed alongside this field when creating characters"
+    ></cb-input-control>
+    <cb-input-control
+        name="Default"
+        horizontal="true"
+        formControlName="default"
+        help="The standard value that will be set for this field"
+        [type]="getDefaultType()"
+    ></cb-input-control>
+    <hr />
+    <ng-container [ngSwitch]="type" formGroupName="meta">
+        <ng-container *ngSwitchCase="CharacterFieldType.Text">
+            <cb-input-control
+                name="Pattern"
+                formControlName="pattern"
+                horizontal="true"
+                help="If a RegEx pattern is set, text in this field must match against it"
+            ></cb-input-control>
+            <cb-input-control
+                name="Minimum Length"
+                formControlName="minLength"
+                horizontal="true"
+                type="number"
+            ></cb-input-control>
+            <cb-input-control
+                name="Maximum Length"
+                formControlName="maxLength"
+                horizontal="true"
+                type="number"
+            ></cb-input-control>
+        </ng-container>
+        <ng-container *ngSwitchCase="CharacterFieldType.Description">
+            <cb-checkbox-control
+                name="Markdown"
+                horizontal="true"
+                formControlName="markdown"
+                help="Enabling Markdown allows collaborators to stylize text within this field (e.g. bold, italics, tables)"
+            ></cb-checkbox-control>
+            <cb-input-control
+                name="Minimum Length"
+                formControlName="minLength"
+                horizontal="true"
+                type="number"
+            ></cb-input-control>
+            <cb-input-control
+                name="Maximum Length"
+                formControlName="maxLength"
+                horizontal="true"
+                type="number"
+            ></cb-input-control>
+        </ng-container>
+        <ng-container *ngSwitchCase="CharacterFieldType.Number">
+            <cb-checkbox-control
+                name="Float"
+                horizontal="true"
+                formControlName="float"
+                help="Enabling Float allows numbers in this field to be fractional (i.e. having decimals)"
+            ></cb-checkbox-control>
+            <cb-input-control name="Minimum" horizontal="true" formControlName="min" type="number"></cb-input-control>
+            <cb-input-control name="Maximum" horizontal="true" formControlName="max" type="number"></cb-input-control>
+            <cb-input-control
+                name="Tick"
+                horizontal="true"
+                formControlName="tick"
+                type="number"
+                help="If Tick is greater than 0, numbers set in this field must be evenly divisible by its value"
+            ></cb-input-control>
+        </ng-container>
+        <ng-container *ngSwitchCase="CharacterFieldType.Progress">
+            <cb-checkbox-control
+                name="Bar"
+                horizontal="true"
+                formControlName="bar"
+                help="Enabling Bar will cause this field to be displayed as a progress bar instead of a number"
+            ></cb-checkbox-control>
+            <cb-select-control
+                name="Color"
+                horizontal="true"
+                formControlName="color"
+                [options]="getProgressColors()"
+            ></cb-select-control>
+            <cb-input-control name="Minimum" horizontal="true" formControlName="min" type="number"></cb-input-control>
+            <cb-input-control name="Maximum" horizontal="true" formControlName="max" type="number"></cb-input-control>
+            <cb-input-control
+                name="Tick"
+                horizontal="true"
+                formControlName="tick"
+                type="number"
+                help="If Tick is greater than 0, numbers set in this field must be evenly divisible by its value"
+            ></cb-input-control>
+        </ng-container>
+        <ng-container *ngSwitchCase="CharacterFieldType.Options">
+            <cb-checkbox-control
+                name="Multiple"
+                horizontal="true"
+                formControlName="multiple"
+                help="Enabling Multiple allows more than one option to be selected"
+            ></cb-checkbox-control>
+            <cb-input-control
+                name="Options"
+                horizontal="true"
+                formControlName="options"
+                list="true"
+                help="Separate options with a comma (e.g. red, green, blue)"
+            ></cb-input-control>
+        </ng-container>
+        <ng-container *ngSwitchCase="CharacterFieldType.List">
+            <cb-input-control
+                name="Minimum Elements"
+                horizontal="true"
+                formControlName="minElements"
+                type="number"
+            ></cb-input-control>
+            <cb-input-control
+                name="Maximum Elements"
+                horizontal="true"
+                formControlName="maxElements"
+                type="number"
+            ></cb-input-control>
+        </ng-container>
+    </ng-container>
+</ng-container>

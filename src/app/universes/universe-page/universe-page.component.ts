@@ -1,84 +1,141 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { distinctUntilChanged, map, mergeMap, tap, throttleTime } from "rxjs/operators";
-import { UserProfile } from "src/app/auth/shared/auth.model";
-import { CharacterListMode } from "src/app/characters/character-list/character-list.component";
+import { BehaviorSubject, Observable, of, Subscription } from "rxjs";
+import {
+    debounceTime,
+    distinctUntilChanged,
+    exhaustMap,
+    filter,
+    first,
+    map,
+    mergeMap,
+    skip,
+    tap,
+    throttleTime,
+} from "rxjs/operators";
+import { User } from "src/app/auth/shared/user.model";
 import { MetaCharacter } from "src/app/characters/character-resolver.service";
-import { CharactersQuery } from "src/app/characters/character-toolbar/character-toolbar.component";
-import { CharacterSort } from "src/app/characters/characters.model";
-import { CharacterService } from "src/app/core/character.service";
+import { CharacterReference, CharacterSort } from "src/app/characters/characters.model";
+import { CharacterStateService } from "src/app/characters/shared/character-state.service";
+import { AuthService } from "src/app/core/auth.service";
+import { CharacterQueryResult, CharacterService } from "src/app/core/character.service";
 import { UniverseService } from "src/app/core/universe.service";
-import { UserService } from "src/app/core/user.service";
 
-import { MetaUniverse } from "../universe.model";
-
-export interface UniverseCharactersSearchQuery {
-    query: CharactersQuery;
-    universeId: string;
-}
+import { CollaboratorRole } from "../shared/collaborator-role.enum";
+import { Collaborator } from "../shared/collaborator.model";
+import { UniverseStateService } from "../shared/universe-state.service";
+import { Universe } from "../shared/universe.model";
 
 @Component({
     selector: "cb-universe-page",
     templateUrl: "./universe-page.component.html",
     styleUrls: ["./universe-page.component.scss"],
 })
-export class UniversePageComponent implements OnInit {
-    public CharacterListMode = CharacterListMode;
-    public characters$: Observable<MetaCharacter[]>;
-    public charactersQuery: CharactersQuery = {
-        sort: CharacterSort.Name,
-        filter: "",
-        page: { direction: 1, after: undefined, before: undefined, count: 0 },
-    };
-    public owner$: Observable<string>;
-    public query$: Observable<CharactersQuery>;
-    public universe$: Observable<MetaUniverse>;
-    private query = new BehaviorSubject<CharactersQuery>(this.charactersQuery);
-    private universe = new BehaviorSubject<string>(undefined);
+export class UniversePageComponent implements OnInit, OnDestroy {
+    public characters$: Observable<CharacterReference[]>;
+    public collaborators: Collaborator[];
+    public descriptionHidden = true;
+    public search$ = new BehaviorSubject<string>("");
+    public totalCharacters = 0;
+    public universe$: Observable<Universe>;
+    public user: User;
+    private searchPage = 0;
+    private searchQuery = "";
+    private searchSub: Subscription;
 
     public constructor(
-        private userService: UserService,
+        private authService: AuthService,
         public route: ActivatedRoute,
         private titleService: Title,
+        private router: Router,
         private characterService: CharacterService,
-        private universeService: UniverseService,
-        private router: Router
+        private characterStateService: CharacterStateService,
+        private universeStateService: UniverseStateService,
     ) {}
 
+    public canToggleDescription(description: string) {
+        return description.length > 240;
+    }
+
+    public getOwner() {
+        return this.collaborators.find((c) => c.role === CollaboratorRole.Owner);
+    }
+
+    public isOwner() {
+        return this.getOwner().user.id === this.user.id;
+    }
+
+    public ngOnDestroy() {
+        this.searchSub.unsubscribe();
+    }
+
     public ngOnInit() {
-        this.route.params.subscribe((params) => {
-            const universeId = params["universeId"];
-            this.universe.next(universeId);
-        });
+        this.route.data.subscribe(
+            (data: { characters: CharacterQueryResult; collaborators: Collaborator[]; universe: Universe }) => {
+                this.searchPage = data.characters.page;
+                this.totalCharacters = data.characters.total;
 
-        this.route.queryParams.subscribe((queryParams) => {
-            const before = queryParams["b"];
-            const after = queryParams["a"];
-            const direction = before ? -1 : after ? 1 : 1;
-            const sort = queryParams["s"] ? queryParams["s"] : CharacterSort.Name;
-            const filter = queryParams["f"] || "";
-            const count = queryParams["c"] || 0;
-            const query: CharactersQuery = { page: { direction, before, after, count }, sort, filter };
-            console.log(query);
-            this.query.next(query);
-        });
+                this.characters$ = this.characterStateService.getReferences();
+                this.universe$ = this.universeStateService
+                    .getUniverses()
+                    .pipe(map((universes) => universes.find((u) => u.id === data.universe.id)));
+                this.collaborators = data.collaborators;
 
-        this.query$ = this.query.pipe(distinctUntilChanged());
-        this.universe$ = this.universe.pipe(
-            mergeMap((id) => this.universeService.getUniverse(id)),
-            tap((universe) => {
-                this.titleService.setTitle(universe.data.name);
-            })
+                this.searchSub = this.search$
+                    .asObservable()
+                    .pipe(
+                        skip(1),
+                        debounceTime(300),
+                        map((q) => q.trim()),
+                        distinctUntilChanged(),
+                        filter((q) => q.length > 2 || q === ""),
+                        exhaustMap((q) =>
+                            this.characterService.getCharacters(data.universe.id, { page: this.searchPage, query: q }),
+                        ),
+                        tap((r) => {
+                            this.totalCharacters = r.total;
+                            this.searchPage = r.page;
+                        }),
+                        map((r) => r.characters),
+                    )
+                    .subscribe((r) => {
+                        this.characterStateService.clearReferences();
+                        this.characterStateService.addReferences(...r);
+                    });
+            },
         );
-        this.characters$ = this.universe.pipe(
-            mergeMap((id) => this.query.pipe(map((query) => ({ query, id })))),
-            mergeMap((data) => this.characterService.getCharactersFromUniverse(data.id, data.query, true))
-        );
-        this.owner$ = this.universe$.pipe(
-            mergeMap((universe) => this.userService.user.map((user) => ({ user, universe }))),
-            map((data) => (data.user.uid === data.universe.data.owner.id ? "you" : data.universe.data.owner.name))
-        );
+        this.authService.getUser().subscribe((user) => {
+            this.user = user;
+        });
+    }
+
+    public onPage(page: number) {
+        this.universe$.pipe(first()).subscribe((u) => {
+            this.characterService
+                .getCharacters(u.id, { page: page - 1, query: this.searchQuery })
+                .pipe(
+                    tap((r) => {
+                        this.totalCharacters = r.total;
+                        this.searchPage = r.page;
+                    }),
+                    map((r) => r.characters),
+                )
+                .subscribe((r) => {
+                    this.characterStateService.clearReferences();
+                    this.characterStateService.addReferences(...r);
+                });
+        });
+    }
+
+    public onSearch(input: string) {
+        this.searchQuery = input;
+        this.search$.next(input);
+    }
+
+    public toggleDescription() {
+        if (this.canToggleDescription) {
+            this.descriptionHidden = !this.descriptionHidden;
+        }
     }
 }
