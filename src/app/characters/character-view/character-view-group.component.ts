@@ -21,6 +21,16 @@ export class CharacterViewGroupComponent implements OnChanges {
         return Object.values(this.characterGroup.fields);
     }
 
+    public getEntryText() {
+        if (this.getCharacterFields().length > 1) {
+            return `+${this.getCharacterFields().length} entries`;
+        } else if (this.getCharacterFields().length === 1) {
+            return "+1 entry";
+        } else {
+            return "No entries";
+        }
+    }
+
     public ngOnChanges() {
         this.collapsed = false;
     }

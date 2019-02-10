@@ -10,3 +10,8 @@
     flex-grow: 1;
 }
 
+:host {
+    display: block;
+    height: 100%;
+    overflow: auto;
+}

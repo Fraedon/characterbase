@@ -1,4 +1,5 @@
 import { Component, OnInit, TemplateRef } from "@angular/core";
+import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { Observable } from "rxjs";
@@ -30,12 +31,12 @@ export class CharacterViewPageComponent implements OnInit {
     public constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private authService: AuthService,
         private modalService: BsModalService,
         private characterService: CharacterService,
         private characterStateService: CharacterStateService,
         private universeStateService: UniverseStateService,
         private universeService: UniverseService,
+        private titleService: Title,
     ) {}
 
     public ngOnInit() {

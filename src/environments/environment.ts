@@ -4,8 +4,8 @@
 
 export const environment = {
     production: false,
-    characterPageLimit: 20,
-    version: "v0.4.0",
+    characterPageLimit: 5,
+    version: "0.4.1",
     apiEndpoint: "http://localhost:3000",
 };
 

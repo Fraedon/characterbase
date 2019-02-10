@@ -1,9 +1,13 @@
-<input
-    type="text"
-    class="search w-100"
-    [placeholder]="'Search ' + universe.name + '…'"
-    (input)="search.emit($event.target.value)"
-    autofocus
-    size="1"
-/>
+<form [formGroup]="searchForm">
+    <input
+        type="text"
+        class="search w-100"
+        [placeholder]="'Search ' + universe.name + '…'"
+        (input)="search.emit($event.target.value)"
+        autofocus
+        size="1"
+        formControlName="search"
+        #s
+    />
+</form>
 <a class="btn btn-primary text-white new" [routerLink]="['c', 'new']"><i class="fas fa-user-plus"></i></a>

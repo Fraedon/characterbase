@@ -1,4 +1,5 @@
-import { Component, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, TemplateRef } from "@angular/core";
+import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 
 import { Character } from "../characters.model";
 
@@ -12,8 +13,11 @@ export class CharacterViewToolbarComponent implements OnChanges, OnInit {
     @Input() public canEdit = false;
     @Input() public character: Character;
     @Output() public deleted = new EventEmitter<null>();
+    public modalRef: BsModalRef;
     @Input() public showAvatar: boolean;
     @HostBinding("class") private classes = "btn-toolbar justify-content-between align-items-center";
+
+    public constructor(private bsModalService: BsModalService) {}
 
     public ngOnChanges() {
         this.reloadAvatar();
@@ -24,6 +28,10 @@ export class CharacterViewToolbarComponent implements OnChanges, OnInit {
             this.character.images && this.character.images["avatar"]
                 ? this.character.images["avatar"]
                 : "assets/blank-avatar.png";
+    }
+
+    public openModal(template: TemplateRef<any>) {
+        this.modalRef = this.bsModalService.show(template, { class: "avatar-modal" });
     }
 
     private reloadAvatar() {

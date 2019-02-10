@@ -3,7 +3,12 @@
     class="border-bottom"
     (search)="search.emit($event)"
 ></cb-character-list-toolbar>
-<div class="list-group overflow-auto" [class.list-group-flush]="flush" *ngIf="characters.length; else noCharacters">
+<div
+    class="list-group overflow-auto h-100"
+    [class.list-group-flush]="flush"
+    *ngIf="characters.length; else noCharacters"
+    #list
+>
     <a
         cb-character-list-item
         *ngFor="let character of characters; last as isLast"
@@ -23,5 +28,5 @@
     [totalItems]="total"
     [itemsPerPage]="pageLimit"
     *ngIf="total > pageLimit"
-    (pageChanged)="page.emit($event.page)"
+    (pageChanged)="onPageChange($event.page)"
 ></pagination>

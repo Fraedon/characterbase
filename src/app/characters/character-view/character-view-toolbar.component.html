@@ -1,12 +1,12 @@
-<!--<div class="input-group">
-    <input class="form-control" type="text" placeholder="Search fields…" />
-</div>-->
+<ng-template #avatarModal>
+    <img class="modal-body avatar-big" [src]="avatarUrl" />
+</ng-template>
 <div class="flex-row d-flex align-items-center">
-    <img class="avatar mr-2" [src]="avatarUrl" *ngIf="showAvatar" />
+    <img class="avatar mr-2 clickable" [src]="avatarUrl" *ngIf="showAvatar" (click)="openModal(avatarModal)" />
     <div class="d-flex flex-column">
         <div class="d-flex flex-row align-items-center">
             <h4 class="mb-0" [class.mr-2]="character.tag">{{ character.name }}</h4>
-            <small class="text-muted font-italic">{{ character.tag }}</small>
+            <small class="text-muted font-italic tag">{{ character.tag | truncate: 24 }}</small>
         </div>
         <span class="text-muted">Owned by {{ character.owner.displayName }}</span>
         <small class="text-warning" *ngIf="character.meta.hidden">Hidden<i class="fas fa-eye-slash ml-2"></i></small>

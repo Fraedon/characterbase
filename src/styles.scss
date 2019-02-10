@@ -27,6 +27,14 @@ markdown :last-child {
     margin-bottom: 0;
 }
 
+.avatar-modal {
+    max-width: 256px;
+}
+
+.avatar-modal .modal-content {
+    background-color: rgba(0, 0, 0, 0.325);
+}
+
 .center-page {
     display: flex;
     align-items: center;

@@ -6,6 +6,7 @@ import { CharacterFieldType, CharacterGuide, ProgressBarColor } from "src/app/ch
 import { CanComponentDeactivate } from "src/app/shared/can-deactivate.guard";
 import { FormStatus } from "src/app/shared/form-status.model";
 import { SubmitButtonState } from "src/app/shared/form/shared/submit-button-state.enum";
+import { minLengthArray } from "src/app/shared/validators/min-length.directive";
 import { uniqueControlNamesValidator } from "src/app/shared/validators/unique-groups.directive";
 
 import { UniverseEditService } from "../../shared/universe-edit.service";
@@ -194,7 +195,7 @@ export class UniverseEditGuideComponent implements OnInit, CanComponentDeactivat
     private createGroupScaffold() {
         return new FormGroup({
             name: new FormControl("", [Validators.required]),
-            fields: new FormArray([], [uniqueControlNamesValidator()]),
+            fields: new FormArray([], [uniqueControlNamesValidator(), minLengthArray(1)]),
             required: new FormControl(true),
         });
     }

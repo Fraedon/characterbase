@@ -143,6 +143,23 @@ export class CharacterEditComponent implements OnInit {
         this.deleteModalRef = this.modalService.show(template);
     }
 
+    private normalizeCharacter() {
+        if (this.character.fields.groups == null) {
+            this.character.fields.groups = {};
+        }
+        Object.keys(this.character.fields.groups).forEach((gk) => {
+            if (this.character.fields.groups[gk].fields) {
+                Object.keys(this.character.fields.groups[gk].fields).forEach((fk) => {
+                    if (this.character.fields.groups[gk].fields[fk] === null) {
+                        this.character.fields.groups[gk].fields[fk] = {} as any;
+                    }
+                });
+            } else {
+                this.character.fields.groups[gk].fields = {} as any;
+            }
+        });
+    }
+
     private patchCharacter() {
         this.resetForm();
         this.universe.guide.groups.forEach((group) => {
@@ -154,9 +171,7 @@ export class CharacterEditComponent implements OnInit {
             this.getFormGroups().setControl(group.name, gScaffold);
         });
         if (this.character) {
-            if (this.character.fields.groups == null) {
-                this.character.fields.groups = {};
-            }
+            this.normalizeCharacter();
             this.characterForm.patchValue(this.character);
         }
     }

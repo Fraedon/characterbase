@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Universe } from "src/app/universes/shared/universe.model";
 
@@ -18,6 +18,7 @@ export class CharacterListComponent {
     @Output() public search = new EventEmitter<string>();
     @Input() public total: number;
     @Input() public universe: Universe;
+    @ViewChild("list") private characterList: HTMLDivElement;
 
     public constructor(private sanitizer: DomSanitizer) {}
 
@@ -32,5 +33,12 @@ export class CharacterListComponent {
     public getPageCount() {
         console.log(this.total, this.pageLimit, this.total / this.pageLimit);
         return Math.ceil(this.total / this.pageLimit);
+    }
+
+    public onPageChange(page: number) {
+        if (this.characterList) {
+            this.characterList.scrollTop = 0;
+        }
+        this.page.emit(page);
     }
 }
