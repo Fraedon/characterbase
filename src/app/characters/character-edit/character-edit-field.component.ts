@@ -20,7 +20,10 @@ export class CharacterEditFieldComponent implements OnChanges {
     }
 
     public ngOnChanges() {
-        if (!this.universeField.required && !this.field.get("value").value) {
+        const isEmpty = Array.isArray(this.field.get("value").value)
+            ? this.field.get("value").value.length === 0
+            : !this.field.get("value").value;
+        if (!this.universeField.required && isEmpty) {
             this.field.disable();
         }
     }

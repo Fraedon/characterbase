@@ -23,6 +23,8 @@ export class CharacterViewToolbarComponent implements OnChanges, OnInit {
 
     public ngOnChanges() {
         this.reloadAvatar();
+        this.expandName = false;
+        this.expandTag = false;
     }
 
     public ngOnInit() {

@@ -23,7 +23,7 @@
         (deleted)="openModal(deleteModal)"
         [universe]="data.universe"
     ></cb-character-view>
-    <footer class="text-muted mb-3 mx-2" *ngIf="!data.character.meta.hidden">
+    <footer class="text-muted mb-3 mx-2" *ngIf="!data.character.meta.hidden || canEdit">
         <small>Created: {{ data.character.createdAt }}</small>
         <br />
         <small>Last updated: {{ data.character.updatedAt }}</small>

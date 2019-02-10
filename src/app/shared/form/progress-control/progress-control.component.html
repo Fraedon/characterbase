@@ -3,10 +3,10 @@
     <label class="float-right">
         <ng-container [ngTemplateOutlet]="labelToolbar" [ngTemplateOutletContext]="labelToolbarContext"></ng-container>
     </label>
-    <div class="row mx-0">
+    <div class="row mx-0 align-items-center">
         <input
             type="range"
-            class="custom-range col-md-11"
+            class="custom-range col-md-11 pr-3"
             [value]="value"
             (input)="setValue($event.target.value)"
             (blur)="onTouched()"
@@ -22,6 +22,8 @@
             [autofocus]="autofocus"
             type="number"
             class="form-control d-sm-none d-md-block col-md-1"
+            [min]="min"
+            [max]="max"
             [value]="value"
             (input)="setValue($event.target.value)"
         />
