@@ -37,7 +37,7 @@ export class CharacterListComponent {
 
     public onPageChange(page: number) {
         if (this.characterList) {
-            this.characterList.scrollTop = 0;
+            setTimeout(() => (this.characterList.scrollTop = 0));
         }
         this.page.emit(page);
     }

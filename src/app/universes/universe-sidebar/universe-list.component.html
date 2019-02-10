@@ -4,5 +4,5 @@
     [routerLink]="['/u', universe.id]"
     routerLinkActive="list-group-item-primary"
 >
-    <i class="fas fa-{{ getGlobe(i) }} mr-2"></i>{{ universe.name }}
+    <i class="fas fa-{{ getGlobe(i) }} mr-2"></i>{{ universe.name | truncate: 32 }}
 </a>

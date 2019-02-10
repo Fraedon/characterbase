@@ -13,12 +13,6 @@ import { AuthModule } from "./auth/auth.module";
 import { AuthService } from "./core/auth.service";
 import { httpInterceptorProviders } from "./http-interceptors";
 
-const markedOptionsFactory = (): MarkedOptions => {
-    const renderer = new MarkedRenderer();
-    renderer.image = () => "";
-    return { renderer };
-};
-
 const authProvider = {
     provide: APP_INITIALIZER,
     useFactory: (authService: AuthService) => () =>
@@ -44,7 +38,11 @@ const authProvider = {
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,
-                useFactory: markedOptionsFactory,
+                useValue: {
+                    tables: true,
+                    smartypants: true,
+                    gfm: true,
+                },
             },
         }),
     ],

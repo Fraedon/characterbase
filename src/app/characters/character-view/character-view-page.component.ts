@@ -25,6 +25,7 @@ export class CharacterViewPageComponent implements OnInit {
     public character$: Observable<Character>;
     public collaborator$: Observable<CollaboratorReference>;
     public deleteModalRef: BsModalRef;
+
     public showTimestampCreated = false;
     public universe$: Observable<Universe>;
 

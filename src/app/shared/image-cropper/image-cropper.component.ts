@@ -7,8 +7,8 @@ import { ImageCroppedEvent } from "ngx-image-cropper/src/image-cropper.component
     templateUrl: "./image-cropper.component.html",
 })
 export class ImageCropperComponent {
-    @Input() imageBase64: string;
-    @Output() cropped = new EventEmitter<File>();
+    @Output() public cropped = new EventEmitter<File>();
+    @Input() public imageBase64: string;
 
     private croppedImage: File;
 

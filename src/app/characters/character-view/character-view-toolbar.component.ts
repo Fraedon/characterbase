@@ -13,6 +13,8 @@ export class CharacterViewToolbarComponent implements OnChanges, OnInit {
     @Input() public canEdit = false;
     @Input() public character: Character;
     @Output() public deleted = new EventEmitter<null>();
+    public expandName = false;
+    public expandTag = false;
     public modalRef: BsModalRef;
     @Input() public showAvatar: boolean;
     @HostBinding("class") private classes = "btn-toolbar justify-content-between align-items-center";
@@ -32,6 +34,18 @@ export class CharacterViewToolbarComponent implements OnChanges, OnInit {
 
     public openModal(template: TemplateRef<any>) {
         this.modalRef = this.bsModalService.show(template, { class: "avatar-modal" });
+    }
+
+    public toggleExpandName() {
+        if (this.character.name.length > 24) {
+            this.expandName = !this.expandName;
+        }
+    }
+
+    public toggleExpandTag() {
+        if (this.character.tag.length > 18) {
+            this.expandTag = !this.expandTag;
+        }
     }
 
     private reloadAvatar() {

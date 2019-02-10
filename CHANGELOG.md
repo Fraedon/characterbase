@@ -1,3 +1,14 @@
+# Version 0.4.2
+
+-   Increased avatar size from 256x256px to 512x512px
+-   Unset optional fields now default to not shown when editing characters
+-   Improved Markdown field styling
+    -   Fields are now left-justified
+    -   Images are now supported
+    -   Tables are now supported
+    -   Increased editor size to 8 rows from 5
+-   Redesigned pagination
+
 # Version 0.4.1
 
 -   Fixed pagination not updating when searching

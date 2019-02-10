@@ -1,14 +1,14 @@
-import { Component, Input } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { Component, Input, OnChanges } from "@angular/core";
+import { FormArray, FormGroup } from "@angular/forms";
 
-import { CharacterGuideGroup } from "../characters.model";
+import { CharacterField, CharacterGroup, CharacterGuideGroup } from "../characters.model";
 
 @Component({
     selector: "cb-character-edit-group",
     templateUrl: "character-edit-group.component.html",
     styleUrls: [],
 })
-export class CharacterEditGroupComponent {
+export class CharacterEditGroupComponent implements OnChanges {
     @Input() public group: FormGroup;
     @Input() public name: string;
     @Input() public universeGroup: CharacterGuideGroup;
@@ -19,6 +19,12 @@ export class CharacterEditGroupComponent {
 
     public getFormField(name: string) {
         return this.getFields().get(name);
+    }
+
+    public ngOnChanges() {
+        if (!this.universeGroup.required && this.isGroupEmpty()) {
+            this.group.disable();
+        }
     }
 
     public toggleGroup() {
@@ -33,5 +39,21 @@ export class CharacterEditGroupComponent {
     public toggleGroupHidden() {
         this.group.get("hidden").setValue(!this.group.get("hidden").value);
         this.group.markAsDirty();
+    }
+
+    private getGroupValues() {
+        return this.group.get("fields").value as { [key: string]: CharacterField };
+    }
+
+    private isGroupEmpty() {
+        const fields = this.getGroupValues();
+        let empty = true;
+        for (const f of Object.values(fields)) {
+            if (f.value) {
+                empty = false;
+                break;
+            }
+        }
+        return empty;
     }
 }

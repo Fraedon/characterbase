@@ -6,6 +6,7 @@
 <div
     class="list-group overflow-auto h-100"
     [class.list-group-flush]="flush"
+    [class.paged]="total > pageLimit"
     *ngIf="characters.length; else noCharacters"
     #list
 >
@@ -25,8 +26,11 @@
     </p>
 </ng-template>
 <pagination
+    [align]="true"
     [totalItems]="total"
+    [maxSize]="5"
     [itemsPerPage]="pageLimit"
+    [rotate]="true"
     *ngIf="total > pageLimit"
     (pageChanged)="onPageChange($event.page)"
 ></pagination>

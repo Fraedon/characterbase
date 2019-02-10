@@ -48,7 +48,9 @@ export class CharacterViewFieldComponent implements OnInit, OnChanges {
 
     public ngOnInit() {
         this.resetHidden();
-        this.classes = `card field-${this.guideField.type} ${this.guideField.meta["bar"] ? "bar" : ""}`;
+        this.classes = `card field-${this.guideField.type} ${this.guideField.meta["bar"] ? "bar" : ""} ${
+            this.guideField.meta["markdown"] ? "markdown" : ""
+        }`;
     }
 
     public resetHidden() {

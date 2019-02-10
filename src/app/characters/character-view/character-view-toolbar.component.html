@@ -1,18 +1,31 @@
 <ng-template #avatarModal>
-    <img class="modal-body avatar-big" [src]="avatarUrl" />
+    <img class="modal-body avatar-big clickable" [src]="avatarUrl" (click)="modalRef.hide()" />
 </ng-template>
 <div class="flex-row d-flex align-items-center">
     <img class="avatar mr-2 clickable" [src]="avatarUrl" *ngIf="showAvatar" (click)="openModal(avatarModal)" />
     <div class="d-flex flex-column">
         <div class="d-flex flex-row align-items-center">
-            <h4 class="mb-0" [class.mr-2]="character.tag">{{ character.name }}</h4>
-            <small class="text-muted font-italic tag">{{ character.tag | truncate: 24 }}</small>
+            <h4
+                class="mb-0 name"
+                [class.mr-2]="character.tag"
+                [class.clickable]="character.name.length > 24"
+                (click)="toggleExpandName()"
+            >
+                {{ expandName ? character.name : (character.name | truncate: 24) }}
+            </h4>
+            <small
+                class="text-muted font-italic tag"
+                [class.clickable]="character.tag.length > 18"
+                (click)="toggleExpandTag()"
+            >
+                {{ expandTag ? character.tag : (character.tag | truncate: 18) }}
+            </small>
         </div>
         <span class="text-muted">Owned by {{ character.owner.displayName }}</span>
         <small class="text-warning" *ngIf="character.meta.hidden">Hidden<i class="fas fa-eye-slash ml-2"></i></small>
     </div>
 </div>
-<div>
+<div class="ml-2">
     <div class="btn-group" *ngIf="canEdit" dropdown placement="bottom right">
         <a class="btn btn-primary text-white" [routerLink]="['./', 'edit']"
             ><i class="fas fa-user-edit mr-2"></i>Edit</a

@@ -28,7 +28,7 @@ markdown :last-child {
 }
 
 .avatar-modal {
-    max-width: 256px;
+    max-width: 512px;
 }
 
 .avatar-modal .modal-content {
@@ -72,6 +72,7 @@ image-cropper div img {
 
 .universe-list {
     min-width: 256px;
+    max-width: 256px;
     height: 100%;
     border-right: 1px solid rgba(0, 0, 0, 0.125);
 }

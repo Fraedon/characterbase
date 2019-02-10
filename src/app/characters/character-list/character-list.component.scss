@@ -16,6 +16,28 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
 }
 
+.list-group.paged a:last-child,
+.list-group.paged a.list-group-item-secondary:last-child {
+    border-bottom: none !important;
+}
+
 pagination {
-    margin: auto auto 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 0;
+    margin: auto 0 0;
+    ::ng-deep {
+        a {
+            border: 0;
+        }
+
+        ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        li a {
+            padding: 0.75rem;
+            border-radius: 0 !important;
+        }
+    }
 }

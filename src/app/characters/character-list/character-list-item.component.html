@@ -1,6 +1,8 @@
 <img class="avatar mr-3" [src]="avatarUrl" *ngIf="showAvatar" />
 <div class="header">
-    <h6 class="m-0" [routerLink]="['c', character.id]">{{ character.name }}</h6>
+    <h6 class="m-0" [routerLink]="['c', character.id]" [class.text-muted]="character.hidden">
+        {{ character.name | truncate: 64 }}
+    </h6>
     <small class="text-muted font-italic">{{ character.tag | truncate: 18 }}</small>
 </div>
 <div *ngIf="caption" class="text-right">

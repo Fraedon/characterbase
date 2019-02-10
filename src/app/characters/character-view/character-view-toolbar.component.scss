@@ -1,5 +1,6 @@
 :host {
     margin: 0 0.5rem 0.5rem;
+    flex-flow: nowrap;
 }
 
 .avatar {
@@ -8,11 +9,15 @@
 }
 
 .avatar-big {
-    width: 256px;
-    height: 256px;
+    width: 512px;
+    height: 512px;
     border-radius: 1.3rem;
 }
 
 .tag {
     word-break: break-all;
+}
+
+.name {
+    word-wrap: anywhere;
 }

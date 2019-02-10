@@ -1,6 +1,6 @@
 <div class="d-flex align-items-center">
     <ng-container *ngTemplateOutlet="leading"></ng-container>
-    <h1 class="my-0">{{ title }}</h1>
+    <h1 class="my-0">{{ title | truncate: 64 }}</h1>
     <ng-container *ngTemplateOutlet="trailing"></ng-container>
 </div>
 <ng-container *ngTemplateOutlet="content"></ng-container>

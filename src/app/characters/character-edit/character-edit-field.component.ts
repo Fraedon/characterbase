@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { createEmbeddedView } from "@angular/core/src/view/view";
 import { FormGroup } from "@angular/forms";
 
@@ -9,7 +9,7 @@ import { CharacterFieldType, CharacterGuideField } from "../characters.model";
     templateUrl: "character-edit-field.component.html",
     styleUrls: [],
 })
-export class CharacterEditFieldComponent {
+export class CharacterEditFieldComponent implements OnChanges {
     public CharacterFieldType = CharacterFieldType;
     @Input() public field: FormGroup;
     @Input() public name: string;
@@ -17,6 +17,12 @@ export class CharacterEditFieldComponent {
 
     public getType() {
         return this.field.get("type").value;
+    }
+
+    public ngOnChanges() {
+        if (!this.universeField.required && !this.field.get("value").value) {
+            this.field.disable();
+        }
     }
 
     public toggleField() {
