@@ -77,7 +77,7 @@ export class UniversePageComponent implements OnInit, OnDestroy {
                 this.totalCharacters = data.characters.total;
 
                 this.titleService.setTitle(data.universe.name);
-                this.descriptionHidden = false;
+                this.descriptionHidden = true;
 
                 this.characters$ = this.characterStateService.getReferences();
                 this.universe$ = this.universeStateService

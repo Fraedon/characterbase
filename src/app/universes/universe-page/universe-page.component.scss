@@ -27,5 +27,6 @@ cb-header {
 }
 
 .description {
-    word-break: break-all;
+    word-wrap: anywhere;
+    text-align: justify;
 }
