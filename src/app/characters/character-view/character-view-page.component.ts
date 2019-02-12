@@ -21,7 +21,7 @@ import { CharacterStateService } from "../shared/character-state.service";
     styleUrls: ["./character-view-page.component.scss"],
 })
 export class CharacterViewPageComponent implements OnInit {
-    public canEdit;
+    public canEdit$: Observable<boolean>;
     public character$: Observable<Character>;
     public collaborator$: Observable<CollaboratorReference>;
     public deleteModalRef: BsModalRef;
@@ -47,13 +47,14 @@ export class CharacterViewPageComponent implements OnInit {
                 map((universes) => universes.find((u) => u.id === data.universe.id)),
                 tap((u) => {
                     this.collaborator$ = this.universeService.getMe(u.id);
-                    this.canEdit = this.collaborator$.pipe(
+                    this.canEdit$ = this.collaborator$.pipe(
                         zip(this.character$),
-                        tap((v) => {
-                            this.canEdit =
+                        map((v) => {
+                            return (
                                 v[0].role === CollaboratorRole.Owner ||
                                 v[0].role === CollaboratorRole.Admin ||
-                                v[0].userId === v[1].owner.id;
+                                v[0].userId === v[1].owner.id
+                            );
                         }),
                     );
                 }),

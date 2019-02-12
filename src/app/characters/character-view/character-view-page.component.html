@@ -14,18 +14,20 @@
             <button type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
         </div>
     </ng-template>
-    <cb-character-view
-        [character]="data.character"
-        [images]="{}"
-        [guide]="data.universe.guide"
-        class="mb-2"
-        [canEdit]="canEdit"
-        (deleted)="openModal(deleteModal)"
-        [universe]="data.universe"
-    ></cb-character-view>
-    <footer class="text-muted mb-3 mx-2" *ngIf="!data.character.meta.hidden || canEdit">
-        <small>Created: {{ data.character.createdAt }}</small>
-        <br />
-        <small>Last updated: {{ data.character.updatedAt }}</small>
-    </footer>
+    <ng-container>
+        <cb-character-view
+            [character]="data.character"
+            [images]="{}"
+            [guide]="data.universe.guide"
+            class="mb-2"
+            [canEdit]="canEdit$ | async"
+            (deleted)="openModal(deleteModal)"
+            [universe]="data.universe"
+        ></cb-character-view>
+        <footer class="text-muted mb-3 mx-2" *ngIf="!data.character.meta.hidden || (canEdit$ | async)">
+            <small>Created: {{ data.character.createdAt }}</small>
+            <br />
+            <small>Last updated: {{ data.character.updatedAt }}</small>
+        </footer>
+    </ng-container>
 </ng-container>
