@@ -83,17 +83,21 @@ markdown {
     overflow: auto;
 }
 
-.card-body:not(.hidden) {
+.card-body {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-:host.field-description.markdown .card-body:not(.hidden) {
+:host.field-description.markdown .card-body:not(.novalue) {
     justify-content: left;
 }
 
 :host.field-description,
 :host.field-progress.bar {
+    width: 100%;
+}
+
+:host.field-description .card-body p {
     width: 100%;
 }

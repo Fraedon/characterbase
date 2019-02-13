@@ -1,9 +1,10 @@
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 import { PaginationModule } from "ngx-bootstrap/pagination";
+import { PopoverModule } from "ngx-bootstrap/popover";
 import { TooltipModule } from "ngx-bootstrap/tooltip";
 import { MarkdownModule } from "ngx-markdown";
 
@@ -48,11 +49,13 @@ import { GuideSortPipe } from "./guide-sort.pipe";
         CommonModule,
         CharactersRoutingModule,
         ReactiveFormsModule,
+        FormsModule,
         ScrollingModule,
         SharedModule,
         BsDropdownModule,
         PaginationModule,
-        TooltipModule.forRoot(),
+        TooltipModule,
+        PopoverModule,
         MarkdownModule.forChild(),
     ],
     exports: [CharacterListComponent],

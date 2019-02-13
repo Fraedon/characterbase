@@ -19,14 +19,18 @@ export class InputControlComponent implements ControlValueAccessor {
     }
     @Input() public autofocus: boolean;
     public disabled: boolean;
+    @Input() public float: boolean;
     @Input() public help: string;
     @Input() public horizontal = false;
     public innerValue: any = "";
     @Input() public labelToolbar: TemplateRef<any>;
     @Input() public labelToolbarContext: object;
     @Input() public list = false;
+    @Input() public max: number;
+    @Input() public min: number;
     @Input() public name: string;
     @Input() public size: "large" | "normal" | "small";
+    @Input() public step: number;
     @Input() public type: string;
     @Input() public value: any;
 
@@ -60,7 +64,11 @@ export class InputControlComponent implements ControlValueAccessor {
         if (this.list) {
             this.value = (value as string).split(",").map((v) => v.trim());
         } else if (this.type === "number") {
-            this.value = Number.parseInt(value, 10);
+            if (this.float) {
+                this.value = Number.parseFloat(value);
+            } else {
+                this.value = Number.parseInt(value, 10);
+            }
         } else {
             this.value = value;
         }

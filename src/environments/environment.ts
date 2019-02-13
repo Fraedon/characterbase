@@ -5,7 +5,7 @@
 export const environment = {
     production: false,
     characterPageLimit: 5,
-    version: "0.4.2",
+    version: "0.4.3",
     apiEndpoint: "http://localhost:3000",
 };
 

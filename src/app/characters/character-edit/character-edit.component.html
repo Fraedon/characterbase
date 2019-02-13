@@ -17,16 +17,21 @@
 <form [formGroup]="characterForm" (submit)="onSubmit()">
     <div class="d-flex align-items-center">
         <div formGroupName="meta">
+            <ng-template #settingsPopover>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" formControlName="hidden" id="fcm-hidden" />
+                    <label class="form-check-label font-weight-bold" for="fcm-hidden">Hide character</label>
+                    <small class="form-text">
+                        If checked, this character will not be displayed to other collaborators
+                    </small>
+                </div>
+            </ng-template>
             <cb-image-upload
                 [canMinimize]="false"
                 [doCrop]="true"
                 [initialImage]="getAvatar()"
                 (uploaded)="onAvatarUpload($event)"
             ></cb-image-upload>
-            <div class="form-check text-center">
-                <input class="form-check-input" type="checkbox" formControlName="hidden" id="hidden-check" />
-                <label class="form-check-label" for="hidden-check"><small>Hidden</small></label>
-            </div>
         </div>
         <div class="d-flex flex-column ml-2 flex-grow-1">
             <input
@@ -39,13 +44,22 @@
             <input
                 type="text"
                 placeholder="Tag"
-                class="form-control mt-2 text-muted text-center font-italic"
+                class="form-control form-control-sm mt-2 text-muted text-center font-italic"
                 formControlName="tag"
             />
             <div class="d-flex mt-2">
-                <a class="btn btn-dark flex-grow-1 mr-2 text-white" [routerLink]="['../']">
+                <a class="btn btn-dark mr-2 text-white" [routerLink]="['../']">
                     <i class="fas fa-angle-left mr-2"></i>Back
                 </a>
+                <button
+                    class="btn btn-dark mr-2"
+                    type="button"
+                    [popover]="settingsPopover"
+                    placement="bottom"
+                    [outsideClick]="true"
+                >
+                    <i class="fas fa-cog mr-2"></i>Settings
+                </button>
                 <cb-submit-button
                     fluid="true"
                     [text]="mode === 'edit' ? 'Save changes' : 'Create character'"

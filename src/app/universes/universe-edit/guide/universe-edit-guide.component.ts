@@ -121,7 +121,6 @@ export class UniverseEditGuideComponent implements OnInit, CanComponentDeactivat
             name: new FormControl("", [Validators.required]),
             description: new FormControl(""),
             type: new FormControl(type, [Validators.required]),
-            default: new FormControl(""),
             required: new FormControl(true),
         });
         switch (type) {

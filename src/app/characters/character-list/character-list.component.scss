@@ -21,10 +21,14 @@
     border-bottom: none !important;
 }
 
-pagination {
+footer {
     border-top: 1px solid rgba(0, 0, 0, 0.125);
     padding: 0;
     margin: auto 0 0;
+}
+
+pagination {
+    overflow-x: auto;
     ::ng-deep {
         a {
             border: 0;

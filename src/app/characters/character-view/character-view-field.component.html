@@ -1,18 +1,18 @@
 <div class="card-header">{{ guideField.name }}</div>
 <ng-template #hiddenField>
-    <div class="card-body" [class.p-0]="canViewHidden">
+    <div class="card-body novalue" [class.p-0]="canViewHidden">
         <button
             class="btn btn-link btn-sm w-100 p-4"
             (click)="hidden = !hidden"
             *ngIf="canViewHidden; else hiddenRestricted"
         >
-            View this field
+            Reveal this field
         </button>
         <ng-template #hiddenRestricted><small class="text-muted font-italic">This field is hidden</small></ng-template>
     </div>
 </ng-template>
 <ng-template #missingField>
-    <div class="card-body">
+    <div class="card-body novalue">
         <small class="text-muted text-center"><i class="fas fa-exclamation-circle mr-2"></i>Missing entry</small>
     </div>
 </ng-template>

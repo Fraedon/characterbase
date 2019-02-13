@@ -13,6 +13,7 @@ import { CharacterReference } from "../characters.model";
 export class CharacterListComponent {
     @Input() public characters: CharacterReference[];
     @Input() public flush: boolean;
+    public hideHiddenCharacters = false;
     @Output() public page = new EventEmitter<number>();
     public pageLimit = environment.characterPageLimit;
     @Output() public search = new EventEmitter<string>();
@@ -28,6 +29,16 @@ export class CharacterListComponent {
                 url ? `, url(${url}) right` : ""
             }`,
         );
+    }
+
+    public getCharacters() {
+        return this.characters.filter((c) => {
+            if (this.hideHiddenCharacters) {
+                return !c.hidden;
+            } else {
+                return c;
+            }
+        });
     }
 
     public getPageCount() {

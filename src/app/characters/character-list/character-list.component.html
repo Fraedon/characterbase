@@ -1,3 +1,12 @@
+<ng-template #searchSettings>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" [(ngModel)]="hideHiddenCharacters" id="fcm-hidden" />
+        <label class="form-check-label font-weight-bold" for="fcm-hidden">Hide hidden characters</label>
+        <small class="form-text">
+            If checked, hidden characters (that are available to you) will not be displayed in results
+        </small>
+    </div>
+</ng-template>
 <cb-character-list-toolbar
     [universe]="universe"
     class="border-bottom"
@@ -12,7 +21,7 @@
 >
     <a
         cb-character-list-item
-        *ngFor="let character of characters; last as isLast"
+        *ngFor="let character of getCharacters(); last as isLast"
         [character]="character"
         [routerLink]="['c', character.id]"
         [showAvatar]="universe.settings.allowAvatars"
@@ -25,12 +34,17 @@
         <a [routerLink]="['c', 'new']">Why not create one?</a>
     </p>
 </ng-template>
-<pagination
-    [align]="true"
-    [totalItems]="total"
-    [maxSize]="5"
-    [itemsPerPage]="pageLimit"
-    [rotate]="true"
-    *ngIf="total > pageLimit"
-    (pageChanged)="onPageChange($event.page)"
-></pagination>
+<footer class="d-flex justify-content-between">
+    <pagination
+        [align]="true"
+        [totalItems]="total"
+        [maxSize]="5"
+        [itemsPerPage]="pageLimit"
+        [rotate]="true"
+        [style.visibility]="total > pageLimit ? 'visible' : 'hidden'"
+        (pageChanged)="onPageChange($event.page)"
+    ></pagination>
+    <button class="btn btn-link ml-auto" [popover]="searchSettings" placement="top" [outsideClick]="true">
+        <i class="fas fa-cog"></i>
+    </button>
+</footer>

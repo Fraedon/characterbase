@@ -1,30 +1,45 @@
-<ng-container *ngIf="characterGroup; else missingGroup">
-    <ng-container *ngIf="characterGroup.fields">
-        <div class="alert alert-dark px-3 py-2 m-2 clickable" (click)="toggleCollapse()">
-            {{ guideGroup.name }}
-            <button type="button" class="close">
-                <i class="fas fa-angle-down" *ngIf="collapsed"></i>
-                <i class="fas fa-angle-up" *ngIf="!collapsed"></i>
-            </button>
-            <span class="float-right mr-3 font-italic" *ngIf="collapsed">
-                {{ getEntryText() }}
-            </span>
-        </div>
-        <div class="fields" *ngIf="!collapsed">
-            <ng-container *ngFor="let field of guideGroup.fields">
-                <cb-character-view-field
-                    *ngIf="field.required || getCharacterField(field.name)"
-                    [guideField]="field"
-                    [characterField]="getCharacterField(field.name)"
-                    [canViewHidden]="canViewHidden"
-                ></cb-character-view-field>
-            </ng-container>
-        </div>
-    </ng-container>
-</ng-container>
 <ng-template #missingGroup>
     <div class="alert alert-dark px-3 py-2 m-2 d-flex align-items-center">
         {{ guideGroup.name }}
         <small class="ml-auto text-muted"><i class="fas fa-exclamation-circle mr-2"></i>Missing group</small>
     </div>
 </ng-template>
+<ng-template #hiddenGroup>
+    <div class="alert alert-secondary px-3 py-2 m-2 align-items-center d-flex">
+        {{ guideGroup.name }}
+        <button
+            class="btn btn-link btn-sm ml-auto stretched-link"
+            *ngIf="canViewHidden; else hiddenRestricted"
+            (click)="hidden = !hidden"
+        >
+            Reveal this group
+        </button>
+        <ng-template #hiddenRestricted><small class="ml-auto">This group is hidden</small></ng-template>
+    </div>
+</ng-template>
+<ng-container *ngIf="characterGroup; else missingGroup">
+    <ng-container *ngIf="!hidden; else hiddenGroup">
+        <ng-container *ngIf="characterGroup.fields">
+            <div class="alert alert-dark px-3 py-2 m-2 clickable" (click)="toggleCollapse()">
+                {{ guideGroup.name }}
+                <button type="button" class="close">
+                    <i class="fas fa-angle-down" *ngIf="collapsed"></i>
+                    <i class="fas fa-angle-up" *ngIf="!collapsed"></i>
+                </button>
+                <span class="float-right mr-3 font-italic" *ngIf="collapsed">
+                    {{ getEntryText() }}
+                </span>
+            </div>
+            <div class="fields" *ngIf="!collapsed">
+                <ng-container *ngFor="let field of guideGroup.fields">
+                    <cb-character-view-field
+                        *ngIf="field.required || getCharacterField(field.name)"
+                        [guideField]="field"
+                        [characterField]="getCharacterField(field.name)"
+                        [canViewHidden]="canViewHidden"
+                    ></cb-character-view-field>
+                </ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+</ng-container>

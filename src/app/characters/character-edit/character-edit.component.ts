@@ -5,15 +5,21 @@ import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { CharacterService } from "src/app/core/character.service";
 import { FormStatus } from "src/app/shared/form-status.model";
 import { SubmitButtonState } from "src/app/shared/form/shared/submit-button-state.enum";
+import { factorable } from "src/app/shared/validators/factorable.directive";
+import { maxLengthArray } from "src/app/shared/validators/max-length.directive";
+import { minLengthArray } from "src/app/shared/validators/min-length.directive";
 import { Universe } from "src/app/universes/shared/universe.model";
 
 import {
     Character,
     CharacterFieldType,
+    CharacterGuideDescriptionField,
     CharacterGuideField,
+    CharacterGuideListField,
     CharacterGuideNumberField,
     CharacterGuideOptionsField,
     CharacterGuideProgressField,
+    CharacterGuideTextField,
 } from "../characters.model";
 
 @Component({
@@ -34,12 +40,7 @@ export class CharacterEditComponent implements OnInit {
     @Input() public status: FormStatus;
     @Input() public universe: Universe;
 
-    public constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private characterService: CharacterService,
-        private modalService: BsModalService,
-    ) {}
+    public constructor(private modalService: BsModalService) {}
 
     public createFieldScaffold(field: CharacterGuideField) {
         const defaultValue = field.default || this.generateDefaultValue(field);
@@ -75,9 +76,50 @@ export class CharacterEditComponent implements OnInit {
     }
 
     public generateValueValidators(field: CharacterGuideField): ValidatorFn[] {
-        const validators = [];
+        const validators: ValidatorFn[] = [];
         if (field.required) {
             validators.push(Validators.required);
+        }
+        switch (field.type) {
+            case CharacterFieldType.Text: {
+                const meta = field.meta as CharacterGuideTextField;
+                validators.push(Validators.minLength(meta.minLength));
+                validators.push(Validators.maxLength(meta.maxLength));
+                if (meta.pattern) {
+                    validators.push(Validators.pattern(meta.pattern));
+                }
+                break;
+            }
+            case CharacterFieldType.Description: {
+                const meta = field.meta as CharacterGuideDescriptionField;
+                validators.push(Validators.minLength(meta.minLength));
+                validators.push(Validators.maxLength(meta.maxLength));
+                break;
+            }
+            case CharacterFieldType.Number: {
+                const meta = field.meta as CharacterGuideNumberField;
+                validators.push(Validators.min(meta.min));
+                validators.push(Validators.max(meta.max));
+                if (meta.tick) {
+                    validators.push(factorable(meta.tick));
+                }
+                break;
+            }
+            case CharacterFieldType.Progress: {
+                const meta = field.meta as CharacterGuideProgressField;
+                validators.push(Validators.min(meta.min));
+                validators.push(Validators.max(meta.max));
+                if (meta.tick) {
+                    validators.push(factorable(meta.tick));
+                }
+                break;
+            }
+            case CharacterFieldType.List: {
+                const meta = field.meta as CharacterGuideListField;
+                console.log(meta);
+                validators.push(minLengthArray(meta.minElements));
+                validators.push(maxLengthArray(meta.maxElements));
+            }
         }
         return validators;
     }
@@ -121,6 +163,10 @@ export class CharacterEditComponent implements OnInit {
             this.patchCharacter();
         });
         this.patchCharacter();
+    }
+
+    public onAvatarResize(e) {
+        console.log(e);
     }
 
     public onAvatarUpload(file: File | null) {

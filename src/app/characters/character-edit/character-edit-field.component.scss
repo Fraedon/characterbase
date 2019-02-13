@@ -1,0 +1,28 @@
+cb-input-control.ng-invalid,
+cb-textarea-control.ng-invalid,
+cb-progress-control.ng-invalid,
+cb-checkbox-control.ng-invalid {
+    ::ng-deep {
+        input,
+        textarea {
+            border-color: #ffc107;
+        }
+
+        input:focus,
+        textarea:focus {
+            box-shadow: 0 0 0 0.2rem rgba(216, 203, 22, 0.25);
+        }
+
+        .form-check-label {
+            color: #ffc107;
+        }
+    }
+}
+
+select.ng-invalid:not(:disabled) {
+    border-color: #ffc107;
+}
+
+select.ng-invalid:not(:disabled):focus {
+    box-shadow: 0 0 0 0.2rem rgba(216, 203, 22, 0.25);
+}

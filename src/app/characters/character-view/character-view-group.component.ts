@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, Input, OnChanges, OnInit } from "@angular/core";
 
 import { CharacterGroup, CharacterGuideGroup } from "../characters.model";
 
@@ -7,11 +7,12 @@ import { CharacterGroup, CharacterGuideGroup } from "../characters.model";
     templateUrl: "./character-view-group.component.html",
     styleUrls: ["./character-view-group.component.scss"],
 })
-export class CharacterViewGroupComponent implements OnChanges {
+export class CharacterViewGroupComponent implements OnChanges, OnInit {
     @Input() public canViewHidden = false;
     @Input() public characterGroup: CharacterGroup;
     public collapsed = false;
     @Input() public guideGroup: CharacterGuideGroup;
+    public hidden = false;
 
     public getCharacterField(name: string) {
         return this.characterGroup.fields[name];
@@ -35,7 +36,17 @@ export class CharacterViewGroupComponent implements OnChanges {
         this.collapsed = false;
     }
 
+    public ngOnInit() {
+        this.resetHidden();
+    }
+
     public toggleCollapse() {
         this.collapsed = !this.collapsed;
+    }
+
+    private resetHidden() {
+        if (this.characterGroup) {
+            this.hidden = this.characterGroup.hidden;
+        }
     }
 }

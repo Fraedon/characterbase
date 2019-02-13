@@ -8,6 +8,9 @@
         (blur)="onTouched()"
         [value]="innerValue"
         [disabled]="disabled"
+        [step]="step"
+        [min]="min"
+        [max]="max"
     />
     <small class="text-muted form-text" *ngIf="help">{{ help }}</small>
 </ng-template>

@@ -49,7 +49,7 @@ export class CharacterEditGroupComponent implements OnChanges {
         const fields = this.getGroupValues();
         let empty = true;
         for (const f of Object.values(fields)) {
-            if (f.value) {
+            if (Array.isArray(f.value) ? f.value.length : f.value) {
                 empty = false;
                 break;
             }

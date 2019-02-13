@@ -1,3 +1,12 @@
+# Version 0.4.3
+
+-   Removed field defaults
+-   Fixed number/progress fields not allowing floats
+-   Improved character creation/edit form
+-   Improved character view sheets
+-   Added section for character list settings
+    -   Added temporary setting for hiding characters
+
 # Version 0.4.2
 
 -   Increased avatar size from 256x256px to 512x512px

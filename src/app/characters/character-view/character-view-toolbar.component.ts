@@ -21,6 +21,24 @@ export class CharacterViewToolbarComponent implements OnChanges, OnInit {
 
     public constructor(private bsModalService: BsModalService) {}
 
+    public hasHiddenFields() {
+        let hidden = false;
+        for (const group of Object.values(this.character.fields.groups)) {
+            if (!group.hidden) {
+                for (const field of Object.values(group.fields)) {
+                    if (field.hidden) {
+                        hidden = true;
+                        break;
+                    }
+                }
+            } else {
+                hidden = true;
+                break;
+            }
+        }
+        return hidden;
+    }
+
     public ngOnChanges() {
         this.reloadAvatar();
         this.expandName = false;

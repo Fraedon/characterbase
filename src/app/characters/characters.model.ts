@@ -136,9 +136,9 @@ export interface CharacterGuideField {
 }
 
 export interface CharacterGuideTextField {
-    case: TextCase;
     maxLength: number;
     minLength: number;
+    pattern: string;
 }
 
 export interface CharacterGuideDescriptionField {
@@ -172,11 +172,6 @@ export interface CharacterGuideOptionsField {
 }
 
 export interface CharacterGuideListField {
-    items:
-        | CharacterFieldType.Text
-        | CharacterFieldType.Number
-        | CharacterFieldType.Reference
-        | CharacterFieldType.Options;
-    maxLength: number;
-    minlength: number;
+    maxElements: number;
+    minElements: number;
 }

@@ -22,7 +22,19 @@
             </small>
         </div>
         <span class="text-muted">Owned by {{ character.owner.displayName }}</span>
-        <small class="text-warning" *ngIf="character.meta.hidden">Hidden<i class="fas fa-eye-slash ml-2"></i></small>
+        <small class="text-warning" *ngIf="character.meta.hidden; else someHidden">
+            Hidden<i class="fas fa-eye-slash ml-1"></i>
+        </small>
+        <ng-template #someHidden>
+            <ng-container *ngIf="canEdit">
+                <small class="text-info" *ngIf="hasHiddenFields(); else publicView">
+                    Some fields hidden<i class="fas fa-eye-slash ml-1"></i>
+                </small>
+                <ng-template #publicView>
+                    <small class="text-info">Public<i class="fas fa-eye ml-1"></i></small>
+                </ng-template>
+            </ng-container>
+        </ng-template>
     </div>
 </div>
 <div class="ml-2">

@@ -6,13 +6,6 @@
         formControlName="description"
         help="A helpful description that will be displayed alongside this field when creating characters"
     ></cb-input-control>
-    <cb-input-control
-        name="Default"
-        horizontal="true"
-        formControlName="default"
-        help="The standard value that will be set for this field"
-        [type]="getDefaultType()"
-    ></cb-input-control>
     <hr />
     <ng-container [ngSwitch]="type" formGroupName="meta">
         <ng-container *ngSwitchCase="CharacterFieldType.Text">
@@ -70,6 +63,7 @@
                 formControlName="tick"
                 type="number"
                 help="If Tick is greater than 0, numbers set in this field must be evenly divisible by its value"
+                [float]="true"
             ></cb-input-control>
         </ng-container>
         <ng-container *ngSwitchCase="CharacterFieldType.Progress">
@@ -93,6 +87,7 @@
                 formControlName="tick"
                 type="number"
                 help="If Tick is greater than 0, numbers set in this field must be evenly divisible by its value"
+                [float]="true"
             ></cb-input-control>
         </ng-container>
         <ng-container *ngSwitchCase="CharacterFieldType.Options">

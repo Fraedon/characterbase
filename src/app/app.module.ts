@@ -5,7 +5,9 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 import { ModalModule } from "ngx-bootstrap/modal";
 import { PaginationModule } from "ngx-bootstrap/pagination";
-import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
+import { PopoverModule } from "ngx-bootstrap/popover";
+import { TooltipModule } from "ngx-bootstrap/tooltip";
+import { MarkdownModule, MarkedOptions } from "ngx-markdown";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -35,6 +37,8 @@ const authProvider = {
         ModalModule.forRoot(),
         BsDropdownModule.forRoot(),
         PaginationModule.forRoot(),
+        PopoverModule.forRoot(),
+        TooltipModule.forRoot(),
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,

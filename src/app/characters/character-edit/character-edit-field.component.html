@@ -56,6 +56,11 @@
             *ngSwitchCase="CharacterFieldType.Number"
             [labelToolbar]="toolbar"
             [labelToolbarContext]="{ field: field }"
+            [step]="getNumberStep()"
+            [min]="universeField.meta['min']"
+            [max]="universeField.meta['max']"
+            help="Must be in range of {{ universeField.meta['min'] }} and {{ universeField.meta['max'] }}"
+            [float]="universeField.meta['float']"
         ></cb-input-control>
         <cb-checkbox-control
             [name]="name"
