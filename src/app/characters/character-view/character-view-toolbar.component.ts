@@ -15,6 +15,7 @@ export class CharacterViewToolbarComponent implements OnChanges, OnInit {
     @Output() public deleted = new EventEmitter<null>();
     public expandName = false;
     public expandTag = false;
+    public hideName = false;
     public modalRef: BsModalRef;
     @Input() public showAvatar: boolean;
     @HostBinding("class") private classes = "btn-toolbar justify-content-between align-items-center";
@@ -43,6 +44,7 @@ export class CharacterViewToolbarComponent implements OnChanges, OnInit {
         this.reloadAvatar();
         this.expandName = false;
         this.expandTag = false;
+        this.hideName = this.character.meta.nameHidden;
     }
 
     public ngOnInit() {

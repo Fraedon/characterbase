@@ -90,6 +90,8 @@ export class CharacterStateService {
             createdAt: character.createdAt,
             updatedAt: character.updatedAt,
             hidden: character.meta.hidden,
+            nameHidden: character.meta.nameHidden,
+            parsedName: character.meta.name,
         };
     }
 }

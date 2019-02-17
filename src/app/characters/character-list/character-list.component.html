@@ -1,9 +1,32 @@
 <ng-template #searchSettings>
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" [(ngModel)]="hideHiddenCharacters" id="fcm-hidden" />
-        <label class="form-check-label font-weight-bold" for="fcm-hidden">Hide hidden characters</label>
+    <div class="form-group pl-3-5">
+        <label for="fcm-order" class="font-weight-bold">Character order</label>
+        <select
+            class="custom-select custom-select-sm"
+            id="fcm-order"
+            [(ngModel)]="currSort"
+            (input)="sort.emit($event.target.value)"
+            [disabled]="!universe.settings.allowLexicographicalOrdering"
+        >
+            <option value="nominal">Nominal</option>
+            <option value="lexicographical">Lexicographical</option>
+        </select>
         <small class="form-text">
-            If checked, hidden characters (that are available to you) will not be displayed in results
+            How character results should be ordered<br />
+            Nominal — Last name, first name<br />Lexicographical — Alphabetical
+        </small>
+    </div>
+    <div class="form-check">
+        <input
+            type="checkbox"
+            class="form-check-input"
+            id="fcm-hidden"
+            (input)="includeHidden.emit($event.target.checked)"
+            [(ngModel)]="currIncludeHidden"
+        />
+        <label class="form-check-label font-weight-bold" for="fcm-hidden">Show hidden characters</label>
+        <small class="form-text">
+            If checked, hidden characters (that are available to you) will be displayed in results
         </small>
     </div>
 </ng-template>
@@ -21,10 +44,11 @@
 >
     <a
         cb-character-list-item
-        *ngFor="let character of getCharacters(); last as isLast"
+        *ngFor="let character of characters; last as isLast"
         [character]="character"
         [routerLink]="['c', character.id]"
         [showAvatar]="universe.settings.allowAvatars"
+        [lex]="currSort === 'lexicographical'"
         routerLinkActive="list-group-item-secondary"
     ></a>
 </div>

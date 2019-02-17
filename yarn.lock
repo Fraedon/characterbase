@@ -394,6 +394,24 @@
     tree-kill "1.2.0"
     webpack-sources "1.2.0"
 
+"@ngxs/devtools-plugin@^3.3.4":
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/@ngxs/devtools-plugin/-/devtools-plugin-3.3.4.tgz#7836ddb94245a8f5bd5137599c66a1a8aea31993"
+  dependencies:
+    tslib "^1.9.0"
+
+"@ngxs/router-plugin@^3.3.4":
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/@ngxs/router-plugin/-/router-plugin-3.3.4.tgz#1a1a7ba33209fd571b8847667076880096845dc9"
+  dependencies:
+    tslib "^1.9.0"
+
+"@ngxs/store@^3.3.4":
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/@ngxs/store/-/store-3.3.4.tgz#dced015eedf054bc651bbc1b67b590287cec7437"
+  dependencies:
+    tslib "^1.9.0"
+
 "@schematics/angular@7.0.5":
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-7.0.5.tgz#96a2fc65113e707548ff732583297e40ab96350d"
@@ -4642,6 +4660,10 @@ parse-asn1@^5.0.0:
     create-hash "^1.1.0"
     evp_bytestokey "^1.0.0"
     pbkdf2 "^3.0.3"
+
+parse-full-name@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/parse-full-name/-/parse-full-name-1.2.3.tgz#5a298301b9a90a42eab61182815f3e13a39fabed"
 
 parse-glob@^3.0.4:
   version "3.0.4"

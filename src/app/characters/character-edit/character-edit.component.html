@@ -18,6 +18,25 @@
     <div class="d-flex align-items-center">
         <div formGroupName="meta">
             <ng-template #settingsPopover>
+                <div class="form-group popover-group" *ngIf="universe.settings.allowLexicographicalOrdering">
+                    <label for="fcm-preferred-name" class="font-weight-bold">Preferred display name</label>
+                    <ng-container formGroupName="name">
+                        <input
+                            class="form-control form-control-sm"
+                            type="text"
+                            formControlName="preferredName"
+                            [placeholder]="getParsedName()"
+                            id="fcm-preferred-name"
+                        />
+                    </ng-container>
+                </div>
+                <div class="form-check mb-1">
+                    <input type="checkbox" class="form-check-input" formControlName="nameHidden" id="fcm-name-hidden" />
+                    <label class="form-check-label font-weight-bold" for="fcm-name-hidden">Hide name</label>
+                    <small class="form-text">
+                        If checked, this character's name will not be displayed to other collaborators
+                    </small>
+                </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" formControlName="hidden" id="fcm-hidden" />
                     <label class="form-check-label font-weight-bold" for="fcm-hidden">Hide character</label>
@@ -39,6 +58,7 @@
                 [placeholder]="universe.settings.titleField"
                 class="form-control form-control-lg text-center"
                 formControlName="name"
+                (input)="onNameChange($event.target.value)"
                 autofocus="true"
             />
             <input

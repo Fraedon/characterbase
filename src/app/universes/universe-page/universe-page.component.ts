@@ -2,24 +2,13 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject, Observable, of, Subscription } from "rxjs";
-import {
-    debounceTime,
-    distinctUntilChanged,
-    exhaustMap,
-    filter,
-    first,
-    map,
-    mergeMap,
-    skip,
-    tap,
-    throttleTime,
-} from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, exhaustMap, map, skip, tap } from "rxjs/operators";
 import { User } from "src/app/auth/shared/user.model";
 import { MetaCharacter } from "src/app/characters/character-resolver.service";
 import { CharacterReference, CharacterSort } from "src/app/characters/characters.model";
 import { CharacterStateService } from "src/app/characters/shared/character-state.service";
 import { AuthService } from "src/app/core/auth.service";
-import { CharacterQueryResult, CharacterService } from "src/app/core/character.service";
+import { CharacterQuery, CharacterQueryResult, CharacterService } from "src/app/core/character.service";
 import { UniverseService } from "src/app/core/universe.service";
 
 import { CollaboratorRole } from "../shared/collaborator-role.enum";
@@ -40,6 +29,7 @@ export class UniversePageComponent implements OnInit, OnDestroy {
     public totalCharacters = 0;
     public universe$: Observable<Universe>;
     public user: User;
+    private getQuery$: BehaviorSubject<CharacterQuery>;
     private searchPage = 0;
     private searchQuery = "";
     private searchSub: Subscription;
@@ -52,7 +42,14 @@ export class UniversePageComponent implements OnInit, OnDestroy {
         private characterService: CharacterService,
         private characterStateService: CharacterStateService,
         private universeStateService: UniverseStateService,
-    ) {}
+    ) {
+        this.getQuery$ = new BehaviorSubject<CharacterQuery>({
+            page: this.searchPage,
+            query: this.searchQuery,
+            includeHidden: true,
+            sort: "nominal",
+        });
+    }
 
     public canToggleDescription(description: string) {
         return description.length > 240;
@@ -85,17 +82,14 @@ export class UniversePageComponent implements OnInit, OnDestroy {
                     .pipe(map((universes) => universes.find((u) => u.id === data.universe.id)));
                 this.collaborators = data.collaborators;
 
-                this.searchSub = this.search$
+                this.searchSub = this.getQuery$
                     .asObservable()
                     .pipe(
                         skip(1),
                         debounceTime(300),
-                        map((q) => q.trim()),
+                        map((q) => ({ ...q, query: q.query.trim(), page: q.page > 1 ? q.page - 1 : 0 })),
                         distinctUntilChanged(),
-                        filter((q) => q.length > 2 || q === ""),
-                        exhaustMap((q) =>
-                            this.characterService.getCharacters(data.universe.id, { page: this.searchPage, query: q }),
-                        ),
+                        exhaustMap((q) => this.characterService.getCharacters(data.universe.id, q)),
                         tap((r) => {
                             this.totalCharacters = r.total;
                             this.searchPage = r.page;
@@ -113,8 +107,12 @@ export class UniversePageComponent implements OnInit, OnDestroy {
         });
     }
 
+    public onIncludeHidden(includeHidden: boolean) {
+        this.getQuery$.next({ ...this.getQuery$.value, includeHidden });
+    }
+
     public onPage(page: number) {
-        this.universe$.pipe(first()).subscribe((u) => {
+        /*this.universe$.pipe(first()).subscribe((u) => {
             this.characterService
                 .getCharacters(u.id, { page: page - 1, query: this.searchQuery })
                 .pipe(
@@ -128,12 +126,17 @@ export class UniversePageComponent implements OnInit, OnDestroy {
                     this.characterStateService.clearReferences();
                     this.characterStateService.addReferences(...r);
                 });
-        });
+        });*/
+        this.getQuery$.next({ ...this.getQuery$.value, page });
     }
 
     public onSearch(input: string) {
         this.searchQuery = input;
-        this.search$.next(input);
+        this.getQuery$.next({ ...this.getQuery$.value, query: input });
+    }
+
+    public onSort(sort: "lexicographical" | "nominal") {
+        this.getQuery$.next({ ...this.getQuery$.value, sort });
     }
 
     public toggleDescription() {

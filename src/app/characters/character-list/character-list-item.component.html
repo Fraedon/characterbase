@@ -1,9 +1,19 @@
 <img class="avatar mr-3" [src]="avatarUrl" *ngIf="showAvatar" />
 <div class="header">
-    <h6 class="m-0" [routerLink]="['c', character.id]" [class.text-muted]="character.hidden">
-        {{ character.name | truncate: 64 }}
-    </h6>
-    <small class="text-muted font-italic">{{ character.tag | truncate: 18 }}</small>
+    <ng-container *ngIf="!character.nameHidden; else hiddenName">
+        <h6
+            class="m-0"
+            [routerLink]="['c', character.id]"
+            [class.text-muted]="character.hidden"
+            *ngIf="!character.nameHidden; else hiddenName"
+        >
+            {{ getName() | truncate: 64 }}
+        </h6>
+        <small class="text-muted font-italic">{{ character.tag | truncate: 18 }}</small>
+    </ng-container>
+    <ng-template #hiddenName>
+        <p class="m-0 text-muted font-italic">Name hidden</p>
+    </ng-template>
 </div>
 <div *ngIf="caption" class="text-right">
     <h6 class="m-0">{{ caption.field }}</h6>

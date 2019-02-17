@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef } from "@angular/core";
 import { FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
+import { parseFullName } from "parse-full-name";
+import { Subscription } from "rxjs";
 import { CharacterService } from "src/app/core/character.service";
 import { FormStatus } from "src/app/shared/form-status.model";
 import { SubmitButtonState } from "src/app/shared/form/shared/submit-button-state.enum";
@@ -20,6 +22,8 @@ import {
     CharacterGuideOptionsField,
     CharacterGuideProgressField,
     CharacterGuideTextField,
+    getFormattedCharacterName,
+    ParsedName,
 } from "../characters.model";
 
 @Component({
@@ -43,7 +47,7 @@ export class CharacterEditComponent implements OnInit {
     public constructor(private modalService: BsModalService) {}
 
     public createFieldScaffold(field: CharacterGuideField) {
-        const defaultValue = field.default || this.generateDefaultValue(field);
+        const defaultValue = this.generateDefaultValue(field);
         return new FormGroup({
             value: new FormControl(defaultValue, this.generateValueValidators(field)),
             hidden: new FormControl(false),
@@ -116,7 +120,6 @@ export class CharacterEditComponent implements OnInit {
             }
             case CharacterFieldType.List: {
                 const meta = field.meta as CharacterGuideListField;
-                console.log(meta);
                 validators.push(minLengthArray(meta.minElements));
                 validators.push(maxLengthArray(meta.maxElements));
             }
@@ -144,6 +147,11 @@ export class CharacterEditComponent implements OnInit {
         return this.universe.guide.groups.find((g) => g.name === name);
     }
 
+    public getParsedName() {
+        const parsed = this.getMetaName().value as ParsedName;
+        return getFormattedCharacterName(parsed);
+    }
+
     public getSubmitState() {
         if (this.status.loading) {
             return SubmitButtonState.Loading;
@@ -165,10 +173,6 @@ export class CharacterEditComponent implements OnInit {
         this.patchCharacter();
     }
 
-    public onAvatarResize(e) {
-        console.log(e);
-    }
-
     public onAvatarUpload(file: File | null) {
         this.avatar = file;
         this.characterForm.markAsDirty();
@@ -181,6 +185,16 @@ export class CharacterEditComponent implements OnInit {
         this.deleted.emit();
     }
 
+    public onNameChange(name: string) {
+        const parsed = parseFullName(name);
+        this.getMetaName().patchValue({
+            firstName: parsed.first,
+            middleName: parsed.middle,
+            lastName: parsed.last,
+            nickname: parsed.nick,
+        });
+    }
+
     public onSubmit() {
         this.saved.emit({ data: this.characterForm.value, avatar: this.avatar });
     }
@@ -189,9 +203,19 @@ export class CharacterEditComponent implements OnInit {
         this.deleteModalRef = this.modalService.show(template);
     }
 
+    private getMetaName() {
+        return this.characterForm.get("meta").get("name") as FormGroup;
+    }
+
     private normalizeCharacter() {
         if (this.character.fields.groups == null) {
             this.character.fields.groups = {};
+        }
+        if (this.character.meta.nameHidden == null) {
+            this.character.meta.nameHidden = false;
+        }
+        if (this.character.meta.name == null) {
+            this.character.meta.name = {} as any;
         }
         Object.keys(this.character.fields.groups).forEach((gk) => {
             if (this.character.fields.groups[gk].fields) {
@@ -219,6 +243,7 @@ export class CharacterEditComponent implements OnInit {
         if (this.character) {
             this.normalizeCharacter();
             this.characterForm.patchValue(this.character);
+            this.onNameChange(this.character.name);
         }
     }
 
@@ -244,6 +269,14 @@ export class CharacterEditComponent implements OnInit {
             }),
             meta: new FormGroup({
                 hidden: new FormControl(false),
+                nameHidden: new FormControl(false),
+                name: new FormGroup({
+                    firstName: new FormControl(""),
+                    middleName: new FormControl(""),
+                    lastName: new FormControl(""),
+                    nickname: new FormControl(""),
+                    preferredName: new FormControl(""),
+                }),
             }),
         });
         this.patchFormStatus();

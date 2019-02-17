@@ -4,6 +4,7 @@ import { CollaboratorRole } from "./collaborator-role.enum";
 
 export interface UniverseSettings {
     allowAvatars: boolean;
+    allowLexicographicalOrdering: boolean;
     titleField: string;
 }
 

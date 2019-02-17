@@ -10,13 +10,21 @@
                 [class.mr-2]="character.tag"
                 [class.clickable]="character.name.length > 24"
                 (click)="toggleExpandName()"
+                *ngIf="!hideName; else viewName"
             >
                 {{ expandName ? character.name : (character.name | truncate: 24) }}
             </h4>
+            <ng-template #viewName>
+                <h4 *ngIf="canEdit" (click)="hideName = false" class="mb-0 name link">
+                    Reveal name
+                </h4>
+                <h4 *ngIf="!canEdit" class="mb-0 name text-muted font-italic">Name hidden</h4>
+            </ng-template>
             <small
                 class="text-muted font-italic tag"
                 [class.clickable]="character.tag.length > 18"
                 (click)="toggleExpandTag()"
+                *ngIf="!hideName"
             >
                 {{ expandTag ? character.tag : (character.tag | truncate: 18) }}
             </small>

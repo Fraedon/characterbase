@@ -6,8 +6,10 @@ import { environment } from "src/environments/environment";
 import { Character, CharacterReference } from "../characters/characters.model";
 
 export interface CharacterQuery {
+    includeHidden: boolean;
     page: number;
     query: string;
+    sort: "lexicographical" | "nominal";
 }
 
 export interface CharacterQueryResult {
@@ -61,11 +63,11 @@ export class CharacterService {
 
     public getCharacters(universeId: string, query?: CharacterQuery) {
         if (!query) {
-            query = { query: "", page: 0 };
+            query = { query: "", page: 0, includeHidden: true, sort: "nominal" };
         }
         return this.http
             .get<CharacterQueryResult>(`${environment.apiEndpoint}/universes/${universeId}/characters`, {
-                params: { q: query.query, p: String(query.page) },
+                params: { q: query.query, p: String(query.page), hidden: String(query.includeHidden), s: query.sort },
             })
             .pipe(first());
     }

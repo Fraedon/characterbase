@@ -27,8 +27,10 @@
             flush="true"
             [universe]="data.universe"
             (search)="onSearch($event)"
+            (includeHidden)="onIncludeHidden($event)"
             (page)="onPage($event)"
             [total]="totalCharacters"
+            (sort)="onSort($event)"
         ></cb-character-list>
     </div>
     <div class="view">

@@ -21,3 +21,15 @@
 .name {
     word-wrap: anywhere;
 }
+
+.link {
+    cursor: pointer;
+    font-weight: 400;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}

@@ -83,7 +83,9 @@ export interface CharacterData {
 export interface CharacterReference extends CharacterData {
     avatarUrl: string | null;
     hidden: boolean;
+    nameHidden: boolean;
     ownerId: string;
+    parsedName: ParsedName;
 }
 
 export interface Character extends CharacterData {
@@ -93,8 +95,18 @@ export interface Character extends CharacterData {
     };
     meta: {
         hidden: boolean;
+        name: ParsedName;
+        nameHidden: boolean;
     };
     owner: User;
+}
+
+export interface ParsedName {
+    firstName: string | null;
+    lastName: string | null;
+    middleName: string | null;
+    nickname: string | null;
+    preferredName: string;
 }
 
 export interface CharacterImages {
@@ -175,3 +187,14 @@ export interface CharacterGuideListField {
     maxElements: number;
     minElements: number;
 }
+
+export const getFormattedCharacterName = (parsed: ParsedName) => {
+    const middle = ` ${parsed.middleName ? parsed.middleName.substring(0, 1) + "." : ""}`;
+    if (parsed.preferredName) {
+        return parsed.preferredName;
+    } else if (parsed.firstName) {
+        return `${parsed.lastName}, ${parsed.firstName}${middle}`;
+    } else {
+        return `${parsed.lastName}${middle}`;
+    }
+};

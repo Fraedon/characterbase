@@ -1,6 +1,6 @@
 import { Component, HostBinding, Input, OnChanges, OnInit } from "@angular/core";
 
-import { CharacterFieldValue, CharacterReference, CharacterSort } from "../characters.model";
+import { CharacterFieldValue, CharacterReference, CharacterSort, getFormattedCharacterName } from "../characters.model";
 
 @Component({
     selector: "cb-character-list-item, [cb-character-list-item]",
@@ -14,7 +14,20 @@ export class CharacterListItemComponent implements OnInit, OnChanges {
     public CharacterSort = CharacterSort;
     @HostBinding("class") public classes: string;
     @Input() public last: boolean;
+    @Input() public lex: boolean;
     @Input() public showAvatar: boolean;
+
+    public getName() {
+        if (this.lex) {
+            if (!this.character.parsedName) {
+                return this.character.name;
+            } else {
+                return getFormattedCharacterName(this.character.parsedName);
+            }
+        } else {
+            return this.character.name;
+        }
+    }
 
     public ngOnChanges() {
         this.reloadAvatar();

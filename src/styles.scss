@@ -66,8 +66,13 @@ image-cropper div img {
     border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
-.clickable {
+.clickable,
+label {
     cursor: pointer;
+}
+
+label {
+    user-select: none;
 }
 
 .universe-list {

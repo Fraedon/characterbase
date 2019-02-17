@@ -20,6 +20,7 @@ export class UniverseEditSettingsComponent implements OnInit, CanComponentDeacti
     public settingsForm = new FormGroup({
         titleField: new FormControl("Name", [Validators.required]),
         allowAvatars: new FormControl(true),
+        allowLexicographicalOrdering: new FormControl(false),
     });
     public status: FormStatus = { loading: false };
     public universe: Universe;

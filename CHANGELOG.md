@@ -1,3 +1,9 @@
+# Version 0.4.4
+
+-   Added lexigraphic and nominal character list ordering
+-   Finalized setting for hiding characters
+-   Added support for character name parsing
+
 # Version 0.4.3
 
 -   Removed field defaults

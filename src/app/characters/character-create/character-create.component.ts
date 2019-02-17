@@ -49,6 +49,7 @@ export class CharacterCreateComponent implements OnInit, CanComponentDeactivate 
     public onCreate(data: { avatar?: File; data: Partial<Character> }) {
         this.status = { loading: true, error: null, success: null };
 
+        console.log(data.data);
         this.universe$.subscribe((u) => {
             this.characterService
                 .createCharacter(u.id, data.data, data.avatar)
